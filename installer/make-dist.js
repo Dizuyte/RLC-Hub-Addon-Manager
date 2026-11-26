@@ -19,6 +19,7 @@ const BANNER =
   "   itself or any other project, is prohibited without the author's written permission.\n" +
   "   Writing addons that run inside RLC Hub+ is allowed: see LICENSE.txt. */\n";
 
+const WATCH = "_0x3b0050['bots']===0x6&&_0x3b0050['cars']===0x6&&_0x3b0050[_0x36788b(0x438)]===0x3&&_0x3b0050['orangeCars']===0x3";
 const min = (file) =>
   esbuild.transformSync(fs.readFileSync(path.join(SRC, file), "utf8"), { minify: true, legalComments: "none", charset: "utf8" }).code;
 const chunk = (...files) => "\n;" + BANNER + files.map(min).join("\n;");
@@ -30,6 +31,10 @@ const payload = {
     { file: "rlc-hubplus/core.js", create: BANNER + min("core/core.js") },
     // the sandbox is injected into the game window as text: kept readable for addon makers who debug in DevTools
     { file: "rlc-hubplus/sandbox.js", create: BANNER + fs.readFileSync(path.join(SRC, "core", "sandbox.js"), "utf8") },
+    // hook "watch-check": the game's rule for a watched match (6 bots, 3 per side) can be changed by addons
+    { file: "main.js", replace: { from: WATCH, to: "(typeof __hubWatchOk==='function'&&__hubWatchOk(_0x3b0050)!==null?__hubWatchOk(_0x3b0050):(" + WATCH + "))" } },
+    { file: "engine/league.js", append: chunk("bridge-patch.js") },
+    { file: "engine/titles.js", append: chunk("bridge-patch.js") },
     { file: "main.js", append: chunk("main-patch.js") },
     { file: "preload.js", append: chunk("preload-patch.js") },
     { file: "renderer/app.js", append: chunk("renderer-patch.js") },

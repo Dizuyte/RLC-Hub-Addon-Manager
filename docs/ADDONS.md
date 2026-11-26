@@ -66,6 +66,7 @@ RLC Hub+ makes sure your code only runs in saves that picked your addon.
 | `group` | no | Only one addon per group in a save (for example two addons that both redo the socials: use the same group name). |
 | `order` | no | Load order, small first (default 100). An addon loaded later wraps the ones before it. |
 | `menu` | no | `true`: your UI also runs when no career is loaded (main menu, World editor). |
+| `hidden` | no | `true`: a library addon, not shown in the picker. It is turned on by the addons that list it in `requires` (code shared by several addons). |
 | `legacyKeys` | no | Keys in a save that mean "this save already used my addon" (only for saves made before RLC Hub+). |
 | `lang` | no | Your translations (see 6). |
 
@@ -103,9 +104,14 @@ automatically limited to saves that have your addon.
 | `hub.state()` | The career loaded right now (or `null`). |
 | `hub.save()` | Write the loaded career to disk. |
 | `hub.isOn(state)` | Does this save have your addon? (Rarely needed: wrapped functions already check.) |
-| `hub.has(state, "other-id")` | Does this save have another addon? |
 | `hub.action(name, fn)` | Something the game window can ask for (see 5). `fn(payload, state)` can be `async`. |
 | `hub.onSnapshot(fn)` | Add your data to what the game window receives: `fn(snapshot, state)`, write into `snapshot.myAddon`. Only called for saves with your addon. |
+| `hub.has(state, "other-id")` | Does this save have another addon? A library uses it to run each part only for the addons picked. |
+| `hub.get(where, name)` | A top-level function or value of a game file, even one the game does not export. `where`: `"league"` (engine/league.js), `"titles"` (engine/titles.js) or `"main"` (main.js, for example `"state"`, `"saveName"`, `"playMatch"`). |
+| `hub.replace(where, name, prev => newFn)` | Replace such a game function for the saves with your addon (the game's own calls inside that file use yours too). |
+| `hub.set(where, name, value)` | Change a game value (not limited to your saves: use with care). |
+| `hub.scope(where)` | For `with (hub.scope("league")) { ... }`: inside the block, the game file's own names work as if your code was written inside that file (handy to port code that was appended to a game file). Assigning a game function there replaces it for your saves. |
+| `hub.hook(name, fn)` | Hooks RLC Hub+ puts inside game code. `"watch-check"`: `fn(stats)` returns `true`/`false` to accept or refuse a watched match with that many bots, `null` for the game's rule. |
 | `hub.log(text)` | Line in `addons\_hubplus.log`. |
 | `hub.dir`, `hub.manifest`, `hub.gameDir`, `hub.gameVersion`, `hub.electron` | Your folder, your addon.json, the game's app folder, the game version, Electron. |
 
@@ -115,8 +121,9 @@ automatically limited to saves that have your addon.
 - **State first**: game functions take the career (`state`) as their first argument. That is how RLC Hub+ knows
   which save is running. A function you add yourself (`engine.myThing = ...`) is not limited: only your code calls it.
 - **Don't keep the career in a variable**: the player can load another save. Use the `state` you receive, or `hub.state()`.
-- Wrapping only changes calls that go **through the exports** (`engine.advance(...)`, which is what main.js and
-  other addons use). Calls the game makes inside `league.js` to its own functions are not changed.
+- Wrapping `hub.engine.x` only changes calls that go **through the exports** (`engine.advance(...)`, which is what
+  main.js and other addons use). To change calls the game makes inside `league.js` to its own functions, use
+  `hub.replace("league", "x", ...)`.
 - Wrap in `try/catch` when unsure: an error in your wrapper breaks the game for that save.
 - Need files (JSON data, images)? Put them in your folder and read them with `require("fs")` and `hub.dir`.
 

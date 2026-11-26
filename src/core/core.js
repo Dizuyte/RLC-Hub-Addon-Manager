@@ -49,6 +49,7 @@ function createHub(env) {
       a.ui = Array.isArray(a.ui) ? a.ui.map(String) : a.ui ? [String(a.ui)] : [];
       a.legacyKeys = Array.isArray(a.legacyKeys) ? a.legacyKeys.map(String) : [];
       a.wrongGame = !!(a.game && gameVersion && String(a.game) !== gameVersion);
+      a.hidden = !!a.hidden; // library addon: not shown in the picker, turned on by the addons that require it
       byId.set(a.id, a);
       addons.push(a);
     }
@@ -168,11 +169,21 @@ function createHub(env) {
   const uiParts = [];   // { id, file, code }
   const snapHooks = []; // { id, fn }
   const actions = new Map(); // "id/name" -> fn
+  const hooks = new Map();   // hook name -> [{ id, fn }] (points RLC Hub+ adds inside game code, see docs/ADDONS.md)
+  function runHook(name, args) {
+    const list = hooks.get(name) || [];
+    const st = getState();
+    for (const h of list) {
+      if (!on(st, h.id)) continue;
+      try { const r = h.fn.apply(null, args); if (r !== undefined && r !== null) return r; } catch (e) { log(h.id + ": hook " + name + ": " + e.message); }
+    }
+    return null;
+  }
   function listView() {
     return {
       addons: addons.map((a) => ({
         id: a.id, name: a.name, author: a.author, version: a.version, description: a.description,
-        requires: a.requires, conflicts: a.conflicts, group: a.group, default: !!a.default, menu: !!a.menu,
+        requires: a.requires, conflicts: a.conflicts, group: a.group, default: !!a.default, menu: !!a.menu, hidden: a.hidden,
         missing: a.missing || null, wrongGame: a.wrongGame, game: a.game || null, url: a.url || null, license: a.license || null,
         failed: a.failed || null, lang: a.lang || null,
       })),
@@ -192,6 +203,69 @@ function createHub(env) {
   function cachedModule(re) {
     for (const k of Object.keys(Module._cache)) if (re.test(k)) return Module._cache[k].exports;
     return null;
+  }
+
+  /* ---------- game internals (top-level functions and values of a game file) ---------- */
+  // league = engine/league.js, titles = engine/titles.js (appended __hubBridge), main = main.js (env.mainBridge)
+  function bridgeOf(where) {
+    if (where === "main") return env.mainBridge || null;
+    const mod = where === "titles" ? cachedModule(/engine[\\/]titles\.js$/) : where === "league" ? env.engine : null;
+    return mod && typeof mod.__hubBridge === "function" ? mod.__hubBridge : null;
+  }
+  function getInternal(where, name) {
+    const b = bridgeOf(where);
+    if (!b) throw new Error("no access to " + where + " (RLC Hub+ files missing)");
+    return b(name);
+  }
+  function setInternal(where, name, value) {
+    const b = bridgeOf(where);
+    if (!b) throw new Error("no access to " + where + " (RLC Hub+ files missing)");
+    b(name, value);
+    fnCache.delete(where + ":" + name);
+  }
+  // Scope for with (hub.scope("league")) { ... }: free names of the code inside resolve to the game file's own
+  // top-level functions and values, like code written inside that file. Assigning one replaces it (gated).
+  const fnCache = new Map(); // functions read through a scope, until something replaces them
+  const NOT_GAME = new Set(["require", "module", "exports", "__dirname", "__filename", "hub", "undefined", "NaN", "Infinity", "eval", "arguments"]);
+  function scope(id, where) {
+    const known = new Map();
+    return new Proxy(Object.create(null), {
+      has(_t, n) {
+        if (typeof n !== "string" || NOT_GAME.has(n) || n in globalThis) return false;
+        if (known.has(n)) return known.get(n);
+        let yes = false;
+        try { yes = getInternal(where, n) !== undefined; } catch (e) { yes = false; }
+        known.set(n, yes);
+        return yes;
+      },
+      get(_t, n) {
+        if (typeof n !== "string") return undefined;
+        const k = where + ":" + n;
+        if (fnCache.has(k)) return fnCache.get(k);
+        const v = getInternal(where, n);
+        if (typeof v === "function") fnCache.set(k, v);
+        return v;
+      },
+      set(_t, n, v) {
+        if (typeof v === "function" && typeof getInternal(where, n) === "function") replaceInternal(id, where, n, () => v);
+        else setInternal(where, n, v);
+        return true;
+      },
+    });
+  }
+  // replaces a game function for the saves of addon id; factory(prev) returns the new function
+  function replaceInternal(id, where, name, factory) {
+    const prev = getInternal(where, name);
+    if (typeof prev !== "function") throw new Error(where + "." + name + " is not a function");
+    const impl = factory(prev);
+    if (typeof impl !== "function") throw new Error("replace " + where + "." + name + ": the factory must return a function");
+    const gated = function () { return onArgs(id, arguments) ? impl.apply(this, arguments) : prev.apply(this, arguments); };
+    gated.__hubPlusAddon = id;
+    setInternal(where, name, gated);
+    // keep the export in step when the game exports the same function
+    const mod = where === "league" ? env.engine : where === "titles" ? cachedModule(/engine[\\/]titles\.js$/) : null;
+    if (mod) { try { const d = Object.getOwnPropertyDescriptor(mod, name); if (d && "value" in d && d.value === prev) mod[name] = gated; } catch (e) {} }
+    return gated;
   }
 
   /* ---------- loading ---------- */
@@ -228,7 +302,13 @@ function createHub(env) {
           return gate(a.id, install, targets ? (Array.isArray(targets) ? targets : [targets]) : null);
         },
         action: (name, fn) => { if (typeof fn === "function") actions.set(a.id + "/" + name, fn); },
+        // game internals: where = "league" (engine/league.js), "titles" (engine/titles.js) or "main" (main.js)
+        get: (where, name) => getInternal(where, name),
+        set: (where, name, value) => setInternal(where, name, value),
+        replace: (where, name, factory) => replaceInternal(a.id, where, name, factory),
+        scope: (where) => scope(a.id, where || "league"),
         onSnapshot: (fn) => { if (typeof fn === "function") snapHooks.push({ id: a.id, fn }); },
+        hook: (name, fn) => { if (typeof fn === "function") { if (!hooks.has(name)) hooks.set(name, []); hooks.get(name).push({ id: a.id, fn }); } },
       };
       if (a.main) {
         try {
@@ -247,6 +327,20 @@ function createHub(env) {
       }
     }
     wrapGenerate(engine); // outermost, so the picked list is known while every addon's generateLeague runs
+    // addon translations also go to the main process (inbox mails, news written by the engine)
+    const gameDir = leagueKey ? path.join(path.dirname(leagueKey), "..") : null;
+    if (gameDir) {
+      for (const a of addons) {
+        if (!a.lang || typeof a.lang !== "object") continue;
+        for (const lang of Object.keys(a.lang)) {
+          let pack = null;
+          try { pack = require(path.join(gameDir, "renderer", "lang", lang + ".js")); } catch (e) { continue; }
+          const mine = a.lang[lang];
+          if (!pack || typeof pack !== "object" || !mine) continue;
+          for (const k of Object.keys(mine)) if (!Object.prototype.hasOwnProperty.call(pack, k)) pack[k] = mine[k];
+        }
+      }
+    }
   }
 
   /* ---------- actions: renderer -> main ---------- */
@@ -254,9 +348,11 @@ function createHub(env) {
     const st = getState();
     const fn = actions.get(id + "/" + name);
     if (!fn) return { ok: false, error: "unknown action " + id + "/" + name };
-    if (!isState(st) || !on(st, id)) return { ok: false, error: "this save does not have the addon " + id };
+    // on the new-career screen the picked list counts (the save does not exist yet)
+    const picked = pending && pending.has(id);
+    if (!picked && (!isState(st) || !on(st, id))) return { ok: false, error: "this save does not have the addon " + id };
     let result;
-    try { result = await fn(payload, st); } catch (e) { log(id + "/" + name + ": " + (e && e.stack || e)); return { ok: false, error: String(e && e.message || e) }; }
+    try { result = await fn(payload, isState(st) ? st : null); } catch (e) { log(id + "/" + name + ": " + (e && e.stack || e)); return { ok: false, error: String(e && e.message || e) }; }
     // read-only actions ({ save: false }) skip the save and the (big) snapshot
     if (result && result.save === false) return { ok: true, result, snapshot: null };
     try { env.saveState(); } catch (e) { log("save: " + e.message); }
@@ -299,7 +395,7 @@ function createHub(env) {
 
   return {
     VERSION, addons, byId, problems, normalize, defaults, infer, ensure, setPending, activeSet, on, onArgs, gate,
-    load, attachWindows, patchSnapshot, listView, runAction, isState,
+    load, attachWindows, patchSnapshot, listView, runAction, isState, runHook,
     get pending() { return pending ? Array.from(pending) : null; },
   };
 }

@@ -90,7 +90,14 @@
     return (a.requires || []).some(function (r) { return r === id || needs(r, id, seen); });
   }
   function dependents(id, picked) { return picked.filter(function (o) { return o !== id && needs(o, id, {}); }); }
-  function names(ids) { return ids.map(function (r) { var b = byId(r); return b ? T(b.name) : r; }).join(", "); }
+  // hidden libraries stay only while a picked addon needs them
+  function prune(list) {
+    return list.filter(function (id) {
+      var a = byId(id);
+      return !(a && a.hidden) || list.some(function (o) { return o !== id && needs(o, id, {}); });
+    });
+  }
+  function names(ids) { return ids.filter(function (r) { var b = byId(r); return !(b && b.hidden); }).map(function (r) { var b = byId(r); return b ? T(b.name) : r; }).join(", "); }
 
   // on the new-career screen: its picker is in the page, or preStartHtml ran a moment ago (render in progress)
   function creating() {
@@ -136,10 +143,10 @@
     if (usable(a) && !onNow) {
       var g = a.group && picked.find(function (o) { var b = byId(o); return b && b.group === a.group; });
       if (g) why.push(T("Replaces {addon} (only one per save).", { addon: T(byId(g).name) }));
-      var miss = (a.requires || []).filter(function (r) { return picked.indexOf(r) < 0; });
+      var miss = (a.requires || []).filter(function (r) { var b = byId(r); return picked.indexOf(r) < 0 && !(b && b.hidden); });
       if (miss.length) why.push(T("Also turns on: {list}.", { list: names(miss) }));
     } else if (onNow) {
-      var deps = dependents(a.id, picked);
+      var deps = dependents(a.id, picked).filter(function (r) { var b = byId(r); return !(b && b.hidden); });
       if (deps.length) why.push(T("Also turns off: {list}.", { list: names(deps) }));
     }
     var tip = [T(a.description || ""), T("by {author}", { author: a.author }) + (a.version ? " · v" + a.version : "")].concat(why).filter(Boolean).join("\n");
@@ -151,7 +158,7 @@
     var v = view();
     if (!v) { ensureList(); return ""; }
     installLang();
-    var list = all();
+    var list = all().filter(function (a) { return !a.hidden; });
     var head = '<div class="pre-field hubplus-pick"><span>' + e2(T("Addons for this save")) + "</span>";
     if (!list.length) {
       return head + '<div class="pre-note">' + e2(T("No addon installed. Put addon folders in {dir}, then restart RLC Hub+.", { dir: v.dir || "addons" })) + "</div>" +
@@ -190,19 +197,19 @@
       ev.preventDefault(); ev.stopPropagation();
       var act = el.dataset.action, picked = (R.pick || defaults()).slice();
       if (act === "hubplus-folder") { if (window.hubPlus) window.hubPlus.openFolder(); return; }
-      if (act === "hubplus-defaults") R.pick = defaults();
+      if (act === "hubplus-defaults") R.pick = prune(defaults());
       else if (act === "hubplus-none") R.pick = [];
       else if (act === "hubplus-addon") {
         var id = el.dataset.id, a = byId(id);
         if (!usable(a)) return;
         if (picked.indexOf(id) >= 0) {
           var drop = dependents(id, picked).concat([id]);
-          R.pick = picked.filter(function (x) { return drop.indexOf(x) < 0; });
+          R.pick = prune(picked.filter(function (x) { return drop.indexOf(x) < 0; }));
         } else {
           // the new one wins: what clashes with it goes, and so does what needed the ones that went
           var keep = picked.filter(function (o) { var b = byId(o); return !(a.group && b && b.group === a.group) && (a.conflicts || []).indexOf(o) < 0 && (b.conflicts || []).indexOf(id) < 0; });
           picked.filter(function (o) { return keep.indexOf(o) < 0; }).forEach(function (g) { keep = keep.filter(function (x) { return dependents(g, picked).indexOf(x) < 0; }); });
-          R.pick = normalize([id].concat(keep));
+          R.pick = prune(normalize([id].concat(keep)));
         }
       } else return;
       send(false); render();
@@ -224,7 +231,7 @@
           var onList = c && c.hubPlus && Array.isArray(c.hubPlus.on) ? c.hubPlus.on : null;
           var box = "";
           if (onList) {
-            var rows = onList.map(function (id) {
+            var rows = onList.filter(function (id) { var a = byId(id); return !(a && a.hidden); }).map(function (id) {
               var a = byId(id);
               if (!a) return '<div style="opacity:.7">' + e2(id) + "</div>";
               return '<div style="margin-top:4px"><b>' + e2(T(a.name)) + "</b>" + (a.version ? " v" + e2(a.version) : "") + " · " + e2(T("by {author}", { author: a.author })) +
