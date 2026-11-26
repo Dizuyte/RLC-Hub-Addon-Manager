@@ -1,11 +1,11 @@
 @echo off
 setlocal EnableExtensions
-title RLC Hub+ installer - by Milan
+title RLC Hub Addon Manager installer - by Milan
 cd /d "%~dp0"
 echo.
-echo  ==================================================
-echo      RLC Hub+ v1.0 for RL Career Hub - by Milan  
-echo  ==================================================
+echo  ===============================================================
+echo      RLC Hub Addon Manager v1.0 for RL Career Hub - by Milan
+echo  ===============================================================
 echo.
 if exist "%~dp0files\install.js" goto unzipped
 echo ERROR: extract the whole zip first, then run this file again.
@@ -34,8 +34,8 @@ if "%GAME:~-1%"=="\" set "GAME=%GAME:~0,-1%"
 if not exist "%GAME%\RL Career Hub.exe" goto notfound
 echo Game found / Jeu trouve : %GAME%
 echo.
-echo Import your current saves, settings and bots into RLC Hub+? Recommended.
-echo Importer tes saves, reglages et bots actuels dans RLC Hub+ ? Conseille.
+echo Import your current saves, settings and bots into RLC Hub Addon Manager? Recommended.
+echo Importer tes saves, reglages et bots actuels dans RLC Hub Addon Manager ? Conseille.
 choice /c YN /n /m "[Y/N] "
 set "SAVES=Y"
 if errorlevel 2 set "SAVES=N"

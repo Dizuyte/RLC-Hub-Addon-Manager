@@ -1,8 +1,8 @@
-/* RLC Hub+ (c) 2026 Milan. All rights reserved. See LICENSE.txt. */
+/* RLC Hub Addon Manager (c) 2026 Milan. All rights reserved. See LICENSE.txt. */
 
 ;/* ===== RLC HUB+ : addon manager (end of renderer/app.js) =====
    - new-career screen: pick the addons of the save (locked once the save is created)
-   - Setup tab: addons of the loaded save with their authors, changing them (two warnings first) + RLC Hub+ credit
+   - Setup tab: addons of the loaded save with their authors, changing them (two warnings first) + RLC Hub Addon Manager credit
    - window.__hubPlusActiveList(): addons on right now (also used by the sandbox that runs the addons' UIs) */
 (function () {
   "use strict";
@@ -24,8 +24,8 @@
       "I understand, continue": "J'ai compris, continuer",
       "Yes, change the addons of this save": "Oui, changer les addons de cette save",
       "Could not change the addons.": "Impossible de changer les addons.",
-      "Addons of this save changed. Restart RLC Hub+ if something looks wrong.": "Addons de la save changés. Relance RLC Hub+ si quelque chose cloche.",
-      "No addon installed. Put addon folders in {dir}, then restart RLC Hub+.": "Aucun addon installé. Mets les dossiers d'addons dans {dir}, puis relance RLC Hub+.",
+      "Addons of this save changed. Restart RLC Hub Addon Manager if something looks wrong.": "Addons de la save changés. Relance RLC Hub Addon Manager si quelque chose cloche.",
+      "No addon installed. Put addon folders in {dir}, then restart RLC Hub Addon Manager.": "Aucun addon installé. Mets les dossiers d'addons dans {dir}, puis relance RLC Hub Addon Manager.",
       "Open the addons folder": "Ouvrir le dossier des addons",
       "by {author}": "par {author}",
       "On": "Activé",
@@ -41,7 +41,7 @@
       "Addons with a problem": "Addons avec un problème",
       "Addons of this save": "Addons de cette save",
       "No addons.": "Aucun addon.",
-      "RLC Hub+ v{v} by Milan. All rights reserved. Addons belong to their authors.": "RLC Hub+ v{v} par Milan. Tous droits réservés. Les addons appartiennent à leurs auteurs.",
+      "RLC Hub Addon Manager v{v} by Milan. All rights reserved. Addons belong to their authors.": "RLC Hub Addon Manager v{v} par Milan. Tous droits réservés. Les addons appartiennent à leurs auteurs.",
     },
   };
   var R = { list: null, pick: null, sent: "", lang: {}, loading: false };
@@ -62,7 +62,7 @@
   function byId(id) { return all().find(function (a) { return a.id === id; }) || null; }
   function usable(a) { return a && !a.missing && !a.failed; }
 
-  // RLC Hub+ texts and each addon's own "lang" (addon.json) in the game's language system (English = key)
+  // RLC Hub Addon Manager texts and each addon's own "lang" (addon.json) in the game's language system (English = key)
   function installLang() {
     var packs = typeof I18N_PACKS !== "undefined" ? I18N_PACKS : window.I18N_PACKS;
     if (!packs) return;
@@ -202,7 +202,7 @@
     var list = all().filter(function (a) { return !a.hidden; });
     var head = '<div class="pre-field hubplus-pick"><span>' + e2(T("Addons for this save")) + "</span>";
     if (!list.length) {
-      return head + '<div class="pre-note">' + e2(T("No addon installed. Put addon folders in {dir}, then restart RLC Hub+.", { dir: v.dir || "addons" })) + "</div>" +
+      return head + '<div class="pre-note">' + e2(T("No addon installed. Put addon folders in {dir}, then restart RLC Hub Addon Manager.", { dir: v.dir || "addons" })) + "</div>" +
         '<div style="margin-top:6px"><button class="ptab" data-action="hubplus-folder" style="cursor:pointer">' + e2(T("Open the addons folder")) + "</button></div></div>";
     }
     if (!R.pick) R.pick = defaults();
@@ -293,7 +293,7 @@
           if (!r || !r.ok) { E.busy = false; showToast((r && r.error) || T("Could not change the addons."), "error"); render(); return; }
           if (r.snapshot) S = r.snapshot;
           E = null;
-          showToast(T("Addons of this save changed. Restart RLC Hub+ if something looks wrong."));
+          showToast(T("Addons of this save changed. Restart RLC Hub Addon Manager if something looks wrong."));
           render();
         }).catch(function (e) { E.busy = false; showToast(String(e && e.message || e), "error"); render(); });
       }
@@ -303,7 +303,7 @@
     if (go && R.pick) send(true); // sent again right before the game's own "new career" call
   }, true);
 
-  /* Setup tab: RLC Hub+ credit + addons of the loaded save */
+  /* Setup tab: RLC Hub Addon Manager credit + addons of the loaded save */
   try {
     if (typeof doctorHtml === "function") {
       var origDoc = doctorHtml;
@@ -326,7 +326,7 @@
               (E ? editHtml() : '<div style="margin-top:8px"><button class="btn sm" data-action="hubplus-edit-open">' + e2(T("Change the addons of this save")) + "</button></div>");
           }
           return html + '<div class="hubplus-setup" style="margin:18px 0 4px;font-size:12px">' + box +
-            '<div style="margin-top:10px;text-align:center;letter-spacing:.06em;opacity:.6">' + e2(T("RLC Hub+ v{v} by Milan. All rights reserved. Addons belong to their authors.", { v: HUBPLUS_VERSION })) + "</div></div>";
+            '<div style="margin-top:10px;text-align:center;letter-spacing:.06em;opacity:.6">' + e2(T("RLC Hub Addon Manager v{v} by Milan. All rights reserved. Addons belong to their authors.", { v: HUBPLUS_VERSION })) + "</div></div>";
         } catch (e) { console.error("[hub+] setup", e); return html; }
       };
     }

@@ -1,4 +1,4 @@
-# RLC Hub+ : les addons en bref (FR)
+# RLC Hub Addon Manager : les addons en bref (FR)
 
 Le guide complet pour créer un addon est en anglais : `ADDONS.md` (tu peux le donner tel quel à Claude, il marche
 aussi si tu lui parles en français).
@@ -21,7 +21,7 @@ avec un `_` devant (`_mon-addon`).
    tu l'appelles, tu ajoutes ta partie. Tes données vont dans `hub.data(state)`.
 3. `ui.js` : les écrans. Tu remplaces les fonctions d'affichage du jeu (`doctorHtml`...) en appelant l'originale.
    Textes en anglais via `tl()`, traductions dans `"lang"` de `addon.json` (c'est toi qui traduis).
-4. RLC Hub+ fait le reste : ton code ne tourne que dans les saves qui ont ton addon.
+4. RLC Hub Addon Manager fait le reste : ton code ne tourne que dans les saves qui ont ton addon.
 
 Un souci ? Regarde `addons\_hubplus.log`.
 

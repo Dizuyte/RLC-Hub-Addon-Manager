@@ -1,6 +1,6 @@
-# Making an addon for RLC Hub+
+# Making an addon for RLC Hub Addon Manager
 
-RLC Hub+ is an addon manager for **RL Career Hub** (0.2.0-beta.33). It runs in its own copy of the game
+RLC Hub Addon Manager is an addon manager for **RL Career Hub** (0.2.0-beta.33). It runs in its own copy of the game
 (`Documents\RL Career Hub+`). An addon is **one folder** in `Documents\RL Career Hub+\addons`. Players pick the
 addons of a career when they create it. They can change them later from the Setup tab, after two warnings (it can
 break the save), so your addon may be turned on in the middle of a career: handle saves that have no data of yours yet.
@@ -25,7 +25,7 @@ Documents\RL Career Hub+\addons\
 4. Problems are written to `addons\_hubplus.log`.
 
 You never edit the game's files. You **wrap** game functions: keep the original, call it, add your part.
-RLC Hub+ makes sure your code only runs in saves that picked your addon.
+RLC Hub Addon Manager makes sure your code only runs in saves that picked your addon.
 
 ---
 
@@ -68,7 +68,7 @@ RLC Hub+ makes sure your code only runs in saves that picked your addon.
 | `order` | no | Load order, small first (default 100). An addon loaded later wraps the ones before it. |
 | `menu` | no | `true`: your UI also runs when no career is loaded (main menu, World editor). |
 | `hidden` | no | `true`: a library addon, not shown in the picker. It is turned on by the addons that list it in `requires` (code shared by several addons). |
-| `legacyKeys` | no | Keys in a save that mean "this save already used my addon" (only for saves made before RLC Hub+). |
+| `legacyKeys` | no | Keys in a save that mean "this save already used my addon" (only for saves made before RLC Hub Addon Manager). |
 | `lang` | no | Your translations (see 6). |
 
 Folders starting with `_` are ignored (handy to turn an addon off for everyone: rename it `_my-addon`).
@@ -112,14 +112,14 @@ automatically limited to saves that have your addon.
 | `hub.replace(where, name, prev => newFn)` | Replace such a game function for the saves with your addon (the game's own calls inside that file use yours too). |
 | `hub.set(where, name, value)` | Change a game value (not limited to your saves: use with care). |
 | `hub.scope(where)` | For `with (hub.scope("league")) { ... }`: inside the block, the game file's own names work as if your code was written inside that file (handy to port code that was appended to a game file). Assigning a game function there replaces it for your saves. |
-| `hub.hook(name, fn)` | Hooks RLC Hub+ puts inside game code. `"watch-check"`: `fn(stats)` returns `true`/`false` to accept or refuse a watched match with that many bots, `null` for the game's rule. |
+| `hub.hook(name, fn)` | Hooks RLC Hub Addon Manager puts inside game code. `"watch-check"`: `fn(stats)` returns `true`/`false` to accept or refuse a watched match with that many bots, `null` for the game's rule. |
 | `hub.log(text)` | Line in `addons\_hubplus.log`. |
 | `hub.dir`, `hub.manifest`, `hub.gameDir`, `hub.gameVersion`, `hub.electron` | Your folder, your addon.json, the game's app folder, the game version, Electron. |
 
 ### Rules
 
 - **Always call the original** function and return its result (or something with the same shape).
-- **State first**: game functions take the career (`state`) as their first argument. That is how RLC Hub+ knows
+- **State first**: game functions take the career (`state`) as their first argument. That is how RLC Hub Addon Manager knows
   which save is running. A function you add yourself (`engine.myThing = ...`) is not limited: only your code calls it.
 - **Don't keep the career in a variable**: the player can load another save. Use the `state` you receive, or `hub.state()`.
 - Wrapping `hub.engine.x` only changes calls that go **through the exports** (`engine.advance(...)`, which is what
@@ -147,7 +147,7 @@ global functions and variables.
 })();
 ```
 
-### What RLC Hub+ turns off for saves without your addon (automatically)
+### What RLC Hub Addon Manager turns off for saves without your addon (automatically)
 
 - game global functions you replaced (like `doctorHtml` above): the game's version is used;
 - your `addEventListener`, `setInterval`, `setTimeout`, `requestAnimationFrame`, `MutationObserver`
@@ -232,7 +232,7 @@ Your translations go in `addon.json`:
 ## 8. Sharing
 
 Zip your addon folder. Players unzip it into `Documents\RL Career Hub+\addons` and restart RL Career Hub+.
-Choose a license for your addon (put a `LICENSE` file in it): your addon is yours, not part of RLC Hub+.
+Choose a license for your addon (put a `LICENSE` file in it): your addon is yours, not part of RLC Hub Addon Manager.
 Porting someone else's mod into an addon: get their permission and credit them.
 
 ---
@@ -249,7 +249,7 @@ Porting someone else's mod into an addon: get their permission and credit them.
 
 Copy this, then describe your addon:
 
-> I'm making an addon for RLC Hub+, an addon manager for the game RL Career Hub (Electron, version 0.2.0-beta.33).
+> I'm making an addon for RLC Hub Addon Manager, an addon manager for the game RL Career Hub (Electron, version 0.2.0-beta.33).
 > Follow the attached guide ADDONS.md exactly: one folder with addon.json, main.js (module.exports = function (hub)
 > {...}, wrap hub.engine functions, keep the original and call it, store data only in hub.data(state)) and ui.js
 > (runs in the game page, replace game global functions like doctorHtml and call the original, texts in English

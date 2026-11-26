@@ -1,6 +1,6 @@
-/* RLC Hub+ (c) 2026 Milan. All rights reserved. See LICENSE.txt.
+/* RLC Hub Addon Manager (c) 2026 Milan. All rights reserved. See LICENSE.txt.
    Addon manager, main process. Installed inside the game as rlc-hubplus/core.js and started from main.js.
-   - every folder <RLC Hub+ folder>\addons\<folder> with an addon.json is an addon
+   - every folder <RLC Hub Addon Manager folder>\addons\<folder> with an addon.json is an addon
    - the addons of a save are picked on the new-career screen and stored in state.hubPlus (locked after that)
    - every engine function an addon wraps is gated: the addon's version runs only for saves that have the addon,
      every other save goes straight to the function underneath (the game's, or the addon loaded before)
@@ -78,7 +78,7 @@ function createHub(env) {
     return addons.map((a) => a.id).filter((id) => want.includes(id)); // load order
   }
   function defaults() { return normalize(addons.filter((a) => a.default).map((a) => a.id)); }
-  // A save made before RLC Hub+ (imported from the normal game): no addon, except the ones whose data is already in it.
+  // A save made before RLC Hub Addon Manager (imported from the normal game): no addon, except the ones whose data is already in it.
   function infer(st) { return normalize(addons.filter((a) => a.legacyKeys.some((k) => st[k] != null)).map((a) => a.id)); }
   const cache = new WeakMap();
   function ensure(st) {
@@ -86,7 +86,7 @@ function createHub(env) {
     let rec = st.hubPlus;
     if (!rec || typeof rec !== "object" || !Array.isArray(rec.on)) {
       rec = st.hubPlus = { v: VERSION, on: infer(st), imported: true, locked: true };
-      log("save from before RLC Hub+: addons " + (rec.on.join(", ") || "none"));
+      log("save from before RLC Hub Addon Manager: addons " + (rec.on.join(", ") || "none"));
     }
     let c = cache.get(rec);
     if (!c || c.src !== rec.on || c.len !== rec.on.length) { c = { src: rec.on, len: rec.on.length, set: new Set(rec.on) }; cache.set(rec, c); }
@@ -183,7 +183,7 @@ function createHub(env) {
   const uiParts = [];   // { id, file, code }
   const snapHooks = []; // { id, fn }
   const actions = new Map(); // "id/name" -> fn
-  const hooks = new Map();   // hook name -> [{ id, fn }] (points RLC Hub+ adds inside game code, see docs/ADDONS.md)
+  const hooks = new Map();   // hook name -> [{ id, fn }] (points RLC Hub Addon Manager adds inside game code, see docs/ADDONS.md)
   function runHook(name, args) {
     const list = hooks.get(name) || [];
     const st = getState();
@@ -228,12 +228,12 @@ function createHub(env) {
   }
   function getInternal(where, name) {
     const b = bridgeOf(where);
-    if (!b) throw new Error("no access to " + where + " (RLC Hub+ files missing)");
+    if (!b) throw new Error("no access to " + where + " (RLC Hub Addon Manager files missing)");
     return b(name);
   }
   function setInternal(where, name, value) {
     const b = bridgeOf(where);
-    if (!b) throw new Error("no access to " + where + " (RLC Hub+ files missing)");
+    if (!b) throw new Error("no access to " + where + " (RLC Hub Addon Manager files missing)");
     b(name, value);
     fnCache.delete(where + ":" + name);
   }

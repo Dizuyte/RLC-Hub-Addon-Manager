@@ -1,83 +1,83 @@
-RLC Hub+ - License
+RLC Hub Addon Manager - License
 ==================
 Copyright (c) 2026 Milan. All rights reserved.
 
-RLC Hub+ is an unofficial addon manager for RL Career Hub. It is not made, endorsed
+RLC Hub Addon Manager is an unofficial addon manager for RL Career Hub. It is not made, endorsed
 or supported by the RL Career Hub team. RL Career Hub and its code belong to their
-owners and are not included in this package: the installer only adds RLC Hub+ to a
+owners and are not included in this package: the installer only adds RLC Hub Addon Manager to a
 copy of the game you already have.
 
-The source code of RLC Hub+ is public so that anyone can read and review it.
+The source code of RLC Hub Addon Manager is public so that anyone can read and review it.
 "Public" does not mean free to reuse.
 
 You may:
 - read and study the source code;
-- download RLC Hub+ from the official post and install it on your own computer for
+- download RLC Hub Addon Manager from the official post and install it on your own computer for
   personal, non-commercial use;
-- write addons that run inside RLC Hub+ (an addon folder with its addon.json), using
-  the guide "Make an addon\ADDONS.md", the example addon and the functions RLC Hub+
+- write addons that run inside RLC Hub Addon Manager (an addon folder with its addon.json), using
+  the guide "Make an addon\ADDONS.md", the example addon and the functions RLC Hub Addon Manager
   gives to addons, and share those addons.
 
-Addons are not part of RLC Hub+: each addon belongs to its author and is under the
-license its author chooses. RLC Hub+ does not check, and is not responsible for,
+Addons are not part of RLC Hub Addon Manager: each addon belongs to its author and is under the
+license its author chooses. RLC Hub Addon Manager does not check, and is not responsible for,
 what an addon does.
 
 Nobody may, without Milan's prior written permission (this includes the
 RL Career Hub team):
-- copy, reuse or adapt RLC Hub+ or any part of its code (addon manager, sandbox,
+- copy, reuse or adapt RLC Hub Addon Manager or any part of its code (addon manager, sandbox,
   installer) in any other project, mod or product, including RL Career Hub itself;
-  writing an addon as described above is not reusing RLC Hub+;
-- share, re-upload or redistribute RLC Hub+, original or modified;
-- use RLC Hub+ or its code commercially;
+  writing an addon as described above is not reusing RLC Hub Addon Manager;
+- share, re-upload or redistribute RLC Hub Addon Manager, original or modified;
+- use RLC Hub Addon Manager or its code commercially;
 - remove or change this license or the credits.
 
 Written permission means a written message from Milan (for example on Discord)
 that explicitly says what is allowed.
 
-RLC Hub+ is provided "as is", without any warranty. Back up your saves. The author
+RLC Hub Addon Manager is provided "as is", without any warranty. Back up your saves. The author
 is not responsible for any damage or data loss, including damage caused by addons.
 
 Contact: Milan, on the RL Career Hub Discord.
 
 -------------------------------------------------------------------------------
 
-RLC Hub+ - Licence (traduction francaise)
+RLC Hub Addon Manager - Licence (traduction francaise)
 =========================================
 Copyright (c) 2026 Milan. Tous droits reserves.
 
-RLC Hub+ est un gestionnaire d'addons non officiel pour RL Career Hub. Il n'est ni
+RLC Hub Addon Manager est un gestionnaire d'addons non officiel pour RL Career Hub. Il n'est ni
 fait, ni approuve, ni supporte par l'equipe de RL Career Hub. RL Career Hub et son
 code appartiennent a leurs proprietaires et ne sont pas inclus : l'installateur
-ajoute seulement RLC Hub+ a une copie du jeu que tu possedes deja.
+ajoute seulement RLC Hub Addon Manager a une copie du jeu que tu possedes deja.
 
-Le code source de RLC Hub+ est public pour que tout le monde puisse le lire et le
+Le code source de RLC Hub Addon Manager est public pour que tout le monde puisse le lire et le
 verifier. "Public" ne veut pas dire libre de reutilisation.
 
 Tu peux :
 - lire et etudier le code source ;
-- telecharger RLC Hub+ depuis le post officiel et l'installer sur ton propre
+- telecharger RLC Hub Addon Manager depuis le post officiel et l'installer sur ton propre
   ordinateur, pour un usage personnel et non commercial ;
-- ecrire des addons qui tournent dans RLC Hub+ (un dossier d'addon avec son
+- ecrire des addons qui tournent dans RLC Hub Addon Manager (un dossier d'addon avec son
   addon.json), en utilisant le guide "Make an addon\ADDONS.md", l'addon d'exemple et
-  les fonctions que RLC Hub+ donne aux addons, et partager ces addons.
+  les fonctions que RLC Hub Addon Manager donne aux addons, et partager ces addons.
 
-Les addons ne font pas partie de RLC Hub+ : chaque addon appartient a son auteur et
-est sous la licence que son auteur choisit. RLC Hub+ ne verifie pas ce que fait un
+Les addons ne font pas partie de RLC Hub Addon Manager : chaque addon appartient a son auteur et
+est sous la licence que son auteur choisit. RLC Hub Addon Manager ne verifie pas ce que fait un
 addon et n'en est pas responsable.
 
 Personne ne peut, sans l'accord ecrit prealable de Milan (equipe de RL Career Hub
 comprise) :
-- copier, reutiliser ou adapter RLC Hub+ ou une partie de son code (gestionnaire
+- copier, reutiliser ou adapter RLC Hub Addon Manager ou une partie de son code (gestionnaire
   d'addons, sandbox, installateur) dans un autre projet, mod ou produit, y compris
   RL Career Hub lui-meme ; ecrire un addon comme decrit plus haut n'est pas
-  reutiliser RLC Hub+ ;
-- partager, re-uploader ou redistribuer RLC Hub+, original ou modifie ;
-- utiliser RLC Hub+ ou son code a des fins commerciales ;
+  reutiliser RLC Hub Addon Manager ;
+- partager, re-uploader ou redistribuer RLC Hub Addon Manager, original ou modifie ;
+- utiliser RLC Hub Addon Manager ou son code a des fins commerciales ;
 - retirer ou modifier cette licence ou les credits.
 
 Un accord ecrit, c'est un message ecrit de Milan (par exemple sur Discord) qui dit
 clairement ce qui est autorise.
 
-RLC Hub+ est fourni "tel quel", sans garantie. Sauvegarde tes saves. L'auteur n'est
+RLC Hub Addon Manager est fourni "tel quel", sans garantie. Sauvegarde tes saves. L'auteur n'est
 pas responsable des dommages ou pertes de donnees, y compris ceux causes par des
 addons.

@@ -1,4 +1,4 @@
-/* RLC Hub+ (c) 2026 Milan. All rights reserved. See LICENSE.txt. */
+/* RLC Hub Addon Manager (c) 2026 Milan. All rights reserved. See LICENSE.txt. */
 
 ;/* ===== RLC HUB+ : addon manager (end of preload.js) ===== */
 (function () {

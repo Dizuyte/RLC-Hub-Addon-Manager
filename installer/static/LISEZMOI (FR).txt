@@ -1,8 +1,8 @@
-RLC Hub+ v1.0 pour RL Career Hub - par Milan
+RLC Hub Addon Manager v1.0 pour RL Career Hub - par Milan
 ============================================
 
 Un gestionnaire d'addons pour RL Career Hub 0.2.0-beta.33 (Windows).
-Ton RL Career Hub normal n'est PAS modifie : RLC Hub+ tourne dans sa propre copie du jeu
+Ton RL Career Hub normal n'est PAS modifie : RLC Hub Addon Manager tourne dans sa propre copie du jeu
 (Documents\RL Career Hub+), avec ses propres saves.
 
 CE QUE CA FAIT
@@ -13,13 +13,13 @@ CE QUE CA FAIT
   Si les addons viennent de personnes differentes, un avertissement te previent qu'ils
   pourraient ne pas marcher ensemble.
 - Les saves importees du jeu normal commencent sans addon.
-- RLC Hub+ est livre sans addon : les addons sont faits par la communaute.
+- RLC Hub Addon Manager est livre sans addon : les addons sont faits par la communaute.
   Cree le tien : Documents\RL Career Hub+\Make an addon (ADDONS.md et le LISEZMOI FR).
 
 INSTALLATION
 1. Clic droit sur le zip > "Extraire tout...". Ne le lance pas depuis le zip.
 2. Ferme RL Career Hub.
-3. Double-clique sur "Install RLC Hub+.bat".
+3. Double-clique sur "Install RLC Hub Addon Manager.bat".
    Si Windows affiche "Windows a protege votre ordinateur" : clique sur "Informations
    complementaires", puis "Executer quand meme".
 4. L'installateur trouve ton jeu. Sinon, colle le dossier qui contient
@@ -28,12 +28,12 @@ INSTALLATION
    repartir de zero. Tes saves normales sont copiees, jamais modifiees.
 6. Attends la copie du jeu (il faut quelques Go de libre), jusqu'a "Termine !".
 7. Lance-le avec le raccourci "RL Career Hub+" sur ton bureau. En bas de l'onglet Setup
-   tu dois voir "RLC Hub+ v1.0 par Milan".
+   tu dois voir "RLC Hub Addon Manager v1.0 par Milan".
 
-MISE A JOUR : lance le nouvel installateur. Tes saves RLC Hub+ et ton dossier addons
+MISE A JOUR : lance le nouvel installateur. Tes saves RLC Hub Addon Manager et ton dossier addons
 sont conserves.
 
 DESINSTALLER : supprime Documents\RL Career Hub+ et le raccourci "RL Career Hub+".
 
-RLC Hub+ n'est ni fait ni supporte par l'equipe de RL Career Hub. Les addons
+RLC Hub Addon Manager n'est ni fait ni supporte par l'equipe de RL Career Hub. Les addons
 appartiennent a leurs auteurs. Voir LICENSE.txt.

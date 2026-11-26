@@ -1,6 +1,6 @@
 // Hello world - game window part. Runs in the game page, like the game's own renderer/app.js:
 // the game's globals (S, render, tl, esc, showToast, doctorHtml ...) can be used and replaced.
-// RLC Hub+ turns everything here off for saves that did not pick this addon.
+// RLC Hub Addon Manager turns everything here off for saves that did not pick this addon.
 (function () {
   "use strict";
 

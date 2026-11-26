@@ -1,4 +1,4 @@
-/* RLC Hub+ (c) 2026 Milan. All rights reserved. See LICENSE.txt.
+/* RLC Hub Addon Manager (c) 2026 Milan. All rights reserved. See LICENSE.txt.
    Addon manager, game window.
    Every addon UI runs between __hubPlusUI.begin(id) and __hubPlusUI.end(id). While it runs (and later, whenever code of that
    addon runs again), what it hooks is tagged with its id:

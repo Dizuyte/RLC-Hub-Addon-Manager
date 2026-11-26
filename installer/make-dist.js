@@ -1,5 +1,5 @@
-// RLC Hub+ (c) 2026 Milan. All rights reserved. See LICENSE.txt.
-// Builds the shareable RLC Hub+ package: payload.bin (minified, encoded code) + installer + addon kit (guide + example).
+// RLC Hub Addon Manager (c) 2026 Milan. All rights reserved. See LICENSE.txt.
+// Builds the shareable RLC Hub Addon Manager package: payload.bin (minified, encoded code) + installer + addon kit (guide + example).
 // usage: node installer/make-dist.js [output folder]   (needs: npm install esbuild)
 const fs = require("fs");
 const path = require("path");
@@ -9,15 +9,15 @@ try { esbuild = require("esbuild"); } catch (_e) { esbuild = require("/opt/npm-t
 
 const ROOT = path.join(__dirname, "..");
 const SRC = path.join(ROOT, "src");
-const OUT = path.resolve(process.argv[2] || path.join(ROOT, "dist", "RLC Hub+"));
+const OUT = path.resolve(process.argv[2] || path.join(ROOT, "dist", "RLC Hub Addon Manager"));
 const VERSION = "1.0";
 const GAME = "0.2.0-beta.33";
 const KEY = Buffer.from("rlc-hubplus/milan/2026/all-rights-reserved");
 const BANNER =
-  "/* RLC Hub+ v" + VERSION + " (c) 2026 Milan. All rights reserved.\n" +
+  "/* RLC Hub Addon Manager v" + VERSION + " (c) 2026 Milan. All rights reserved.\n" +
   "   Copying, redistributing, modifying or reusing this code, in whole or in part, including in RL Career Hub\n" +
   "   itself or any other project, is prohibited without the author's written permission.\n" +
-  "   Writing addons that run inside RLC Hub+ is allowed: see LICENSE.txt. */\n";
+  "   Writing addons that run inside RLC Hub Addon Manager is allowed: see LICENSE.txt. */\n";
 
 const WATCH = "_0x3b0050['bots']===0x6&&_0x3b0050['cars']===0x6&&_0x3b0050[_0x36788b(0x438)]===0x3&&_0x3b0050['orangeCars']===0x3";
 const min = (file) =>
@@ -55,12 +55,12 @@ const gz = zlib.gzipSync(Buffer.from(JSON.stringify(payload), "utf8"), { level: 
 for (let i = 0; i < gz.length; i++) gz[i] ^= KEY[i % KEY.length];
 fs.writeFileSync(path.join(OUT, "files", "payload.bin"), gz);
 const inst = esbuild.transformSync(fs.readFileSync(path.join(__dirname, "install.js"), "utf8"), { minify: true, legalComments: "none" }).code;
-fs.writeFileSync(path.join(OUT, "files", "install.js"), "/* RLC Hub+ installer (c) 2026 Milan. All rights reserved. */\n" + inst);
+fs.writeFileSync(path.join(OUT, "files", "install.js"), "/* RLC Hub Addon Manager installer (c) 2026 Milan. All rights reserved. */\n" + inst);
 for (const f of fs.readdirSync(path.join(__dirname, "static"))) {
   const dest = f === "LICENSE.txt" ? [path.join(OUT, f), path.join(OUT, "files", f)] : [path.join(OUT, f)];
   for (const d of dest) fs.copyFileSync(path.join(__dirname, "static", f), d);
 }
-// addon kit: installed as "<RLC Hub+ folder>\Make an addon"
+// addon kit: installed as "<RLC Hub Addon Manager folder>\Make an addon"
 const KIT = path.join(OUT, "files", "addon-kit");
 fs.mkdirSync(KIT, { recursive: true });
 fs.copyFileSync(path.join(ROOT, "docs", "ADDONS.md"), path.join(KIT, "ADDONS.md"));
