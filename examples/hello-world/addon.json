@@ -1,0 +1,20 @@
+{
+  "id": "hello-world",
+  "name": "Hello world",
+  "author": "Your name",
+  "version": "1.0.0",
+  "description": "Example addon: counts the days played and shows them in the Setup tab.",
+  "game": "0.2.0-beta.33",
+  "main": "main.js",
+  "ui": ["ui.js"],
+  "default": false,
+  "lang": {
+    "fr": {
+      "Hello world": "Bonjour le monde",
+      "Example addon: counts the days played and shows them in the Setup tab.": "Addon d'exemple : compte les jours joués et les affiche dans l'onglet Setup.",
+      "Hello world addon: {n} days played in this save.": "Addon Bonjour le monde : {n} jours joués dans cette save.",
+      "Reset": "Remettre à zéro",
+      "Counter reset.": "Compteur remis à zéro."
+    }
+  }
+}
