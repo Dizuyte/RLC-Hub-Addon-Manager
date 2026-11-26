@@ -8,8 +8,9 @@ Your normal RL Career Hub is NOT modified: RLC Hub+ runs in its own copy of the 
 WHAT IT DOES
 - Addons go in Documents\RL Career Hub+\addons (one folder per addon).
 - When you create a new career, you pick its addons above the Start button.
-  The list is locked: a save always keeps the addons it was created with.
-  The Setup tab shows the addons of the loaded save.
+  The Setup tab shows the addons of the loaded save. You can change them there, after two
+  warnings: changing the addons of a running career can break the save.
+  If the addons come from different people, a warning tells you they may not work together.
 - Saves imported from your normal game start with no addon.
 - RLC Hub+ comes with no addon: addons are made by the community.
   Make your own: Documents\RL Career Hub+\Make an addon\ADDONS.md

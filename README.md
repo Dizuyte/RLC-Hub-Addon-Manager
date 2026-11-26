@@ -5,7 +5,8 @@ RL Career Hub **0.2.0-beta.33**.
 
 - Runs in its own copy of the game (`Documents\RL Career Hub+`), with its own saves: the normal game is never touched.
 - Addons are folders in `Documents\RL Career Hub+\addons`.
-- The addons of a career are picked on the new-career screen and **locked** for that save.
+- The addons of a career are picked on the new-career screen; they can be changed later from the Setup tab after
+  two warnings (it can break the save). A warning shows when the picked addons come from different authors.
 - Comes with no addon. **Make your own: [docs/ADDONS.md](docs/ADDONS.md)** (French summary: [docs/ADDONS-FR.md](docs/ADDONS-FR.md)),
   starting from [examples/hello-world](examples/hello-world).
 

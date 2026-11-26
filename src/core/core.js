@@ -94,6 +94,20 @@ function createHub(env) {
   }
   const isState = (a) => !!a && typeof a === "object" && Array.isArray(a.teams) && Array.isArray(a.players);
 
+  // Setup tab: the player changes the addons of a career that has started (after two warnings in the game window)
+  function editSave(st, ids) {
+    if (!isState(st)) return { ok: false, error: "No career loaded." };
+    ensure(st);
+    const before = st.hubPlus.on.slice();
+    // addons not installed any more stay in the list (their data is still in the save, they come back when reinstalled)
+    const missing = before.filter((id) => !byId.has(id));
+    const on = normalize(ids).concat(missing);
+    st.hubPlus.on = on;
+    st.hubPlus.edits = (Array.isArray(st.hubPlus.edits) ? st.hubPlus.edits : []).concat([{ date: st.currentDate || null, before, after: on.slice() }]).slice(-20);
+    log("addons of the save changed by the player: " + (before.join(", ") || "none") + " -> " + (on.join(", ") || "none"));
+    return { ok: true, on };
+  }
+
   let pending = null;   // Set picked on the new-career screen, before the save exists
   let creating = null;  // Set used while engine.generateLeague builds the new save
   function setPending(list) { pending = new Set(normalize(list)); return Array.from(pending); }
@@ -394,7 +408,7 @@ function createHub(env) {
   }
 
   return {
-    VERSION, addons, byId, problems, normalize, defaults, infer, ensure, setPending, activeSet, on, onArgs, gate,
+    VERSION, addons, byId, problems, normalize, defaults, infer, ensure, setPending, editSave, activeSet, on, onArgs, gate,
     load, attachWindows, patchSnapshot, listView, runAction, isState, runHook,
     get pending() { return pending ? Array.from(pending) : null; },
   };

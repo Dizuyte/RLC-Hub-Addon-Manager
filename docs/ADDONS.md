@@ -2,7 +2,8 @@
 
 RLC Hub+ is an addon manager for **RL Career Hub** (0.2.0-beta.33). It runs in its own copy of the game
 (`Documents\RL Career Hub+`). An addon is **one folder** in `Documents\RL Career Hub+\addons`. Players pick the
-addons of a career when they create it, and that list is **locked** for the whole save.
+addons of a career when they create it. They can change them later from the Setup tab, after two warnings (it can
+break the save), so your addon may be turned on in the middle of a career: handle saves that have no data of yours yet.
 
 This guide is written so you can hand it to Claude (or read it yourself). A ready-to-copy prompt is at the end.
 
@@ -216,7 +217,11 @@ Your translations go in `addon.json`:
 
 ## 7. How saves work
 
-- New career: the picked list is stored in the save (`state.hubPlus.on`) and never changes.
+- New career: the picked list is stored in the save (`state.hubPlus.on`).
+- Setup tab > "Change the addons of this save": the player can turn addons on or off in a running career, after two
+  warnings. An addon turned on later starts from that day (its `generateLeague` part never ran for that save); an addon
+  turned off leaves its data in the save. Every change is kept in `state.hubPlus.edits`.
+- When the addons picked come from different authors, the player sees a warning that they may not work together.
 - Saves imported from the normal game: no addon (except addons whose `legacyKeys` are found in the save).
 - An addon removed from the folder: its saves still open, its data stays in the save, its features are gone
   until it comes back.

@@ -49,6 +49,12 @@
     ipcMain.handle("hubplus-pending", (_e, ids) => ({ ok: true, on: hub.setPending(Array.isArray(ids) ? ids : []) }));
     ipcMain.handle("hubplus-call", (_e, id, name, payload) => hub.runAction(String(id || ""), String(name || ""), payload));
     ipcMain.handle("hubplus-open-folder", () => electron.shell.openPath(addonsDir));
+    ipcMain.handle("hubplus-edit-save", (_e, ids) => {
+      const r = hub.editSave(state, Array.isArray(ids) ? ids.map(String) : []);
+      if (!r.ok) return r;
+      try { saveState(); } catch (e) { log("save: " + e.message); }
+      return { ok: true, on: r.on, snapshot: snapshot() };
+    });
     electron.app.whenReady().then(() => hub.attachWindows()).catch((e) => console.error("[hub+] windows", e));
   } catch (err) { console.error("[hub+] main", err); }
 })();

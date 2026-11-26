@@ -10,6 +10,8 @@
       // run an action an addon registered with hub.action(name, fn) in its main.js; resolves { ok, result, snapshot, error }
       call: function (id, name, payload) { return e.ipcRenderer.invoke("hubplus-call", String(id), String(name), payload === undefined ? null : payload); },
       openFolder: function () { return e.ipcRenderer.invoke("hubplus-open-folder"); },
+      // Setup tab: change the addons of the loaded save (the game window asks for two confirmations first)
+      editSave: function (ids) { return e.ipcRenderer.invoke("hubplus-edit-save", Array.isArray(ids) ? ids.map(String) : []); },
     });
   } catch (err) { console.error("[hub+] preload", err); }
 })();

@@ -8,7 +8,8 @@ aussi si tu lui parles en français).
 1. Dézippe le dossier de l'addon dans `Documents\RL Career Hub+\addons` (le dossier doit contenir `addon.json`).
 2. Relance RL Career Hub+.
 3. Crée une **nouvelle carrière** : au-dessus du bouton Start, active les addons que tu veux.
-4. C'est verrouillé : une save garde toujours les addons choisis à sa création. Tu les vois dans l'onglet Setup.
+4. Tu les vois dans l'onglet Setup, et tu peux les changer là après deux avertissements (ça peut casser la save).
+   Si les addons viennent de personnes différentes, un avertissement te prévient qu'ils pourraient ne pas marcher ensemble.
 
 Une save importée du jeu normal n'a aucun addon. Pour désactiver un addon pour tout le monde, renomme son dossier
 avec un `_` devant (`_mon-addon`).
