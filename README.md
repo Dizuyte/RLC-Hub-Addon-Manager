@@ -7,12 +7,13 @@ RL Career Hub **0.2.0-beta.33**.
 - Addons are folders in `Documents\RL Career Hub+\addons`.
 - The addons of a career are picked on the new-career screen; they can be changed later from the Setup tab after
   two warnings (it can break the save). A warning shows when the picked addons come from different authors.
-- Comes with no addon. **Make your own: [docs/ADDONS.md](docs/ADDONS.md)** (French summary: [docs/ADDONS-FR.md](docs/ADDONS-FR.md)),
+- Comes with no addon. Every feature of RLC Enhancer is available as addons: **[RLCH-Addons-Milan](https://github.com/Dizuyte/RLCH-Addons-Milan)**.
+- **Make your own: [docs/ADDONS.md](docs/ADDONS.md)** (French summary: [docs/ADDONS-FR.md](docs/ADDONS-FR.md)),
   starting from [examples/hello-world](examples/hello-world).
 
 ## Install (players)
 
-Download the release zip, extract it, close RL Career Hub, double-click `Install RLC Hub+.bat`, then start the game
+Download `RLC-Hub-Plus-v1.0.zip` from the [releases](https://github.com/Dizuyte/RLC-Hub-Addon-Manager/releases), extract it, close RL Career Hub, double-click `Install RLC Hub+.bat`, then start the game
 with the **RL Career Hub+** shortcut. Full guide in the zip (`README (EN).txt`, `LISEZMOI (FR).txt`).
 
 ## How it works
