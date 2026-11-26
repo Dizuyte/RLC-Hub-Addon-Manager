@@ -113,14 +113,28 @@ function createHub(env) {
   /* ---------- gating ---------- */
   // Runs install(); every function it replaced on the targets becomes a dispatcher: the addon's version for saves with
   // the addon, the previous one otherwise. Functions it added are left as they are (only the addon calls them).
+  // Only plain function properties count. Getters are never read: some game ones load files when read
+  // (engine.DRILL_MAPS) and reading them here could throw or change what the game does.
+  function fnProps(t) {
+    const m = new Map();
+    for (const k of Object.getOwnPropertyNames(t)) {
+      let d;
+      try { d = Object.getOwnPropertyDescriptor(t, k); } catch (e) { continue; }
+      if (d && "value" in d && typeof d.value === "function") m.set(k, d.value);
+    }
+    return m;
+  }
   function gate(id, install, targets) {
     targets = (targets || [env.engine]).filter((t) => t && (typeof t === "object" || typeof t === "function"));
-    const before = targets.map((t) => { const m = new Map(); for (const k of Object.keys(t)) m.set(k, t[k]); return m; });
+    let before;
+    try { before = targets.map(fnProps); } catch (e) { log(id + ": could not list functions: " + e.message); before = targets.map(() => new Map()); }
     let ok = true;
     try { install(); } catch (e) { ok = false; log(id + ": failed: " + (e && e.stack || e)); }
     targets.forEach((t, i) => {
-      for (const k of Object.keys(t)) {
-        const now = t[k], prev = before[i].get(k);
+      let after;
+      try { after = fnProps(t); } catch (e) { log(id + ": could not list functions: " + e.message); return; }
+      for (const [k, now] of after) {
+        const prev = before[i].get(k);
         if (typeof now !== "function" || typeof prev !== "function" || now === prev || now.__hubPlusAddon === id) continue;
         const gated = function () { return onArgs(id, arguments) ? now.apply(this, arguments) : prev.apply(this, arguments); };
         for (const p of Object.keys(now)) { try { gated[p] = now[p]; } catch (e) {} }
@@ -222,7 +236,9 @@ function createHub(env) {
           const fn = typeof mod === "function" ? mod : mod && mod.main;
           if (typeof fn !== "function") throw new Error(a.main + " must export a function: module.exports = function (hub) { ... }");
           // everything the addon wraps while main() runs is gated automatically
-          gate(a.id, () => fn(hub), [engine]);
+          let err = null;
+          gate(a.id, () => { try { fn(hub); } catch (e) { err = e; throw e; } }, [engine]);
+          if (err) throw err;
           alog("loaded" + (a.wrongGame ? " (made for game " + a.game + ", this is " + gameVersion + ")" : ""));
         } catch (e) { a.failed = String(e && e.message || e); alog("failed to load: " + (e && e.stack || e)); }
       }
