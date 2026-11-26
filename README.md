@@ -3,8 +3,8 @@
 An addon manager for **RL Career Hub** (Rocket League career game), by Milan. Current version: **v1.0**, for
 RL Career Hub **0.2.0-beta.33**.
 
-- Runs in its own copy of the game (`Documents\RL Career Hub+`), with its own saves: the normal game is never touched.
-- Addons are folders in `Documents\RL Career Hub+\addons`.
+- Runs in its own copy of the game (`Documents\RLC Hub Addon Manager`), with its own saves: the normal game is never touched.
+- Addons are folders in `Documents\RLC Hub Addon Manager\addons`.
 - The addons of a career are picked on the new-career screen; they can be changed later from the Setup tab after
   two warnings (it can break the save). A warning shows when the picked addons come from different authors.
 - Comes with no addon. Every feature of RLC Enhancer is available as addons: **[RLCH-Addons-Milan](https://github.com/Dizuyte/RLCH-Addons-Milan)**.
@@ -14,7 +14,7 @@ RL Career Hub **0.2.0-beta.33**.
 ## Install (players)
 
 Download `RLC-Hub-Addon-Manager-v1.0.zip` from the [releases](https://github.com/Dizuyte/RLC-Hub-Addon-Manager/releases), extract it, close RL Career Hub, double-click `Install RLC Hub Addon Manager.bat`, then start the game
-with the **RL Career Hub+** shortcut. Full guide in the zip (`README (EN).txt`, `LISEZMOI (FR).txt`).
+with the **RLC Hub Addon Manager** shortcut. Full guide in the zip (`README (EN).txt`, `LISEZMOI (FR).txt`).
 
 ## How it works
 

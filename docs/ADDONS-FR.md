@@ -5,8 +5,8 @@ aussi si tu lui parles en français).
 
 ## Installer un addon (joueurs)
 
-1. Dézippe le dossier de l'addon dans `Documents\RL Career Hub+\addons` (le dossier doit contenir `addon.json`).
-2. Relance RL Career Hub+.
+1. Dézippe le dossier de l'addon dans `Documents\RLC Hub Addon Manager\addons` (le dossier doit contenir `addon.json`).
+2. Relance RLC Hub Addon Manager.
 3. Crée une **nouvelle carrière** : au-dessus du bouton Start, active les addons que tu veux.
 4. Tu les vois dans l'onglet Setup, et tu peux les changer là après deux avertissements (ça peut casser la save).
    Si les addons viennent de personnes différentes, un avertissement te prévient qu'ils pourraient ne pas marcher ensemble.

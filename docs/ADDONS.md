@@ -1,7 +1,7 @@
 # Making an addon for RLC Hub Addon Manager
 
 RLC Hub Addon Manager is an addon manager for **RL Career Hub** (0.2.0-beta.33). It runs in its own copy of the game
-(`Documents\RL Career Hub+`). An addon is **one folder** in `Documents\RL Career Hub+\addons`. Players pick the
+(`Documents\RLC Hub Addon Manager`). An addon is **one folder** in `Documents\RLC Hub Addon Manager\addons`. Players pick the
 addons of a career when they create it. They can change them later from the Setup tab, after two warnings (it can
 break the save), so your addon may be turned on in the middle of a career: handle saves that have no data of yours yet.
 
@@ -12,7 +12,7 @@ This guide is written so you can hand it to Claude (or read it yourself). A read
 ## 1. The 2-minute version
 
 ```
-Documents\RL Career Hub+\addons\
+Documents\RLC Hub Addon Manager\addons\
   my-addon\
     addon.json     <- required: who you are, what to load
     main.js        <- optional: game logic (main process, Node.js)
@@ -21,7 +21,7 @@ Documents\RL Career Hub+\addons\
 
 1. Copy `Make an addon\examples\hello-world` into `addons\` and rename the folder.
 2. Change `"id"` in `addon.json` (lowercase letters, digits and `-`, unique).
-3. Restart RL Career Hub+, start a **new career**, turn your addon **On** above the Start button.
+3. Restart RLC Hub Addon Manager, start a **new career**, turn your addon **On** above the Start button.
 4. Problems are written to `addons\_hubplus.log`.
 
 You never edit the game's files. You **wrap** game functions: keep the original, call it, add your part.
@@ -90,7 +90,7 @@ module.exports = function (hub) {
 };
 ```
 
-It runs **once**, when RL Career Hub+ starts. Everything you replace on `hub.engine` while it runs is
+It runs **once**, when RLC Hub Addon Manager starts. Everything you replace on `hub.engine` while it runs is
 automatically limited to saves that have your addon.
 
 ### What `hub` gives you
@@ -231,7 +231,7 @@ Your translations go in `addon.json`:
 
 ## 8. Sharing
 
-Zip your addon folder. Players unzip it into `Documents\RL Career Hub+\addons` and restart RL Career Hub+.
+Zip your addon folder. Players unzip it into `Documents\RLC Hub Addon Manager\addons` and restart RLC Hub Addon Manager.
 Choose a license for your addon (put a `LICENSE` file in it): your addon is yours, not part of RLC Hub Addon Manager.
 Porting someone else's mod into an addon: get their permission and credit them.
 
@@ -241,7 +241,7 @@ Porting someone else's mod into an addon: get their permission and credit them.
 
 - `addons\_hubplus.log`: addons found, problems in `addon.json`, errors in `main.js`, errors in your UI.
 - Your addon is greyed out in the picker: hover it, the reason is shown (missing addon, load error).
-- To test a fix: restart RL Career Hub+ (UI files are read at start) and load a save that has your addon.
+- To test a fix: restart RLC Hub Addon Manager (UI files are read at start) and load a save that has your addon.
 
 ---
 

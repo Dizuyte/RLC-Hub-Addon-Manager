@@ -197,7 +197,7 @@ function makeShortcut(lnk, exe, args, workdir) {
   const script =
     "$s=(New-Object -ComObject WScript.Shell).CreateShortcut(" + q(lnk) + ");" +
     "$s.TargetPath=" + q(exe) + ";$s.Arguments=" + q(args) + ";$s.WorkingDirectory=" + q(workdir) + ";" +
-    "$s.IconLocation=" + q(exe + ",0") + ";$s.Description='RL Career Hub+ (RLC Hub Addon Manager)';$s.Save()";
+    "$s.IconLocation=" + q(exe + ",0") + ";$s.Description='RLC Hub Addon Manager';$s.Save()";
   cp.execFileSync("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", script], { stdio: "ignore" });
 }
 
@@ -225,7 +225,7 @@ function main() {
   if (!fs.existsSync(srcExe) || !fs.existsSync(srcAsarFile)) fail("RL Career Hub was not found in " + gameDir, "RL Career Hub est introuvable dans " + gameDir);
 
   const docs = psFolder("MyDocuments", path.join(os.homedir(), "Documents"));
-  const root = path.join(docs, "RL Career Hub+");
+  const root = path.join(docs, "RLC Hub Addon Manager");
   const game = path.join(root, "RL Career Hub");
   const data = path.join(root, "rl-career-hub (AppData)");
   const exe = path.join(game, "RL Career Hub.exe");
@@ -275,8 +275,8 @@ function main() {
   // 3. patch
   say("Installing RLC Hub Addon Manager ...", "Installation de RLC Hub Addon Manager ...");
   try { writeAsar(base, planChanges(base, payload), asarFile); } catch (e) {
-    fail("Could not write the game files (" + (e.code || e.message) + "). Close RL Career Hub+ and try again.",
-      "Impossible d'ecrire les fichiers du jeu (" + (e.code || e.message) + "). Ferme RL Career Hub+ et reessaie.");
+    fail("Could not write the game files (" + (e.code || e.message) + "). Close RLC Hub Addon Manager and try again.",
+      "Impossible d'ecrire les fichiers du jeu (" + (e.code || e.message) + "). Ferme RLC Hub Addon Manager et reessaie.");
   }
 
   // 4. saves
@@ -305,8 +305,8 @@ function main() {
   fs.mkdirSync(addonsDir, { recursive: true });
   try {
     fs.writeFileSync(path.join(addonsDir, "_READ ME.txt"),
-      "Put each addon in its own folder here (the folder holds its addon.json), then restart RL Career Hub+.\r\n" +
-      "Mets chaque addon dans son propre dossier ici (le dossier contient son addon.json), puis relance RL Career Hub+.\r\n\r\n" +
+      "Put each addon in its own folder here (the folder holds its addon.json), then restart RLC Hub Addon Manager.\r\n" +
+      "Mets chaque addon dans son propre dossier ici (le dossier contient son addon.json), puis relance RLC Hub Addon Manager.\r\n\r\n" +
       "Folders starting with _ are ignored. / Les dossiers qui commencent par _ sont ignores.\r\n" +
       "Make your own addon / Creer ton addon: ..\\Make an addon\\ADDONS.md\r\n");
   } catch (_e) {}
@@ -317,21 +317,21 @@ function main() {
 
   // 5. launchers
   const argLine = '--user-data-dir="' + data + '"';
-  fs.writeFileSync(path.join(root, "Launch RL Career Hub+.bat"),
+  fs.writeFileSync(path.join(root, "Launch RLC Hub Addon Manager.bat"),
     "@echo off\r\nrem RLC Hub Addon Manager by Milan. Launches the RLC Hub Addon Manager copy with its own data.\r\nstart \"\" \"%~dp0RL Career Hub\\RL Career Hub.exe\" --user-data-dir=\"%~dp0rl-career-hub (AppData)\"\r\n");
   try { fs.copyFileSync(path.join(here, "LICENSE.txt"), path.join(root, "LICENSE.txt")); } catch (_e) {}
   const desktop = psFolder("Desktop", path.join(os.homedir(), "Desktop"));
   let lnkOk = true;
   try {
-    makeShortcut(path.join(root, "RL Career Hub+.lnk"), exe, argLine, game);
-    makeShortcut(path.join(desktop, "RL Career Hub+.lnk"), exe, argLine, game);
+    makeShortcut(path.join(root, "RLC Hub Addon Manager.lnk"), exe, argLine, game);
+    makeShortcut(path.join(desktop, "RLC Hub Addon Manager.lnk"), exe, argLine, game);
   } catch (_e) { lnkOk = false; }
 
   fs.writeFileSync(path.join(root, "rlc-hubplus-version.txt"), "RLC Hub Addon Manager " + payload.mod + " for RL Career Hub " + baseVersion + "\r\n");
   say("", "");
   say("Done! RLC Hub Addon Manager v" + payload.mod + " is installed in " + root, "Termine ! RLC Hub Addon Manager v" + payload.mod + " est installe dans " + root);
-  if (lnkOk) say('Start it with the "RL Career Hub+" shortcut on your desktop.', 'Lance-le avec le raccourci "RL Career Hub+" sur ton bureau.');
-  else say('Start it with "Launch RL Career Hub+.bat" in that folder.', 'Lance-le avec "Launch RL Career Hub+.bat" dans ce dossier.');
+  if (lnkOk) say('Start it with the "RLC Hub Addon Manager" shortcut on your desktop.', 'Lance-le avec le raccourci "RLC Hub Addon Manager" sur ton bureau.');
+  else say('Start it with "Launch RLC Hub Addon Manager.bat" in that folder.', 'Lance-le avec "Launch RLC Hub Addon Manager.bat" dans ce dossier.');
   say("Addons go in " + addonsDir, "Les addons vont dans " + addonsDir);
   say("Your normal RL Career Hub is not modified.", "Ton RL Career Hub normal n'est pas modifie.");
 }

@@ -1,4 +1,4 @@
-// Hello world - main process part (runs once when RL Career Hub+ starts).
+// Hello world - main process part (runs once when RLC Hub Addon Manager starts).
 // Everything you wrap on hub.engine here only runs for saves that picked this addon.
 module.exports = function (hub) {
   const engine = hub.engine;
