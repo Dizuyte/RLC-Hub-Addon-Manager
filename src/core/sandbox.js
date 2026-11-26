@@ -24,7 +24,7 @@
     if (typeof window.__hubPlusActiveList === "function") { try { return window.__hubPlusActiveList(); } catch (e) {} }
     var s = gameS();
     var meta = s && s.hubPlus;
-    if (window.__hubPlusCreating && Array.isArray(window.__hubPlusPending)) return window.__hubPlusPending;
+    if (window.__hubPlusCreating && document.querySelector(".pre-go") && Array.isArray(window.__hubPlusPending)) return window.__hubPlusPending;
     var c = s && s.career;
     if (c && c.hubPlus && Array.isArray(c.hubPlus.on)) return c.hubPlus.on;
     if (c && meta && Array.isArray(meta.on)) return meta.on;

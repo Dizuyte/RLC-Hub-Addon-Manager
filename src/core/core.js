@@ -241,7 +241,9 @@ function createHub(env) {
     if (!isState(st) || !on(st, id)) return { ok: false, error: "this save does not have the addon " + id };
     let result;
     try { result = await fn(payload, st); } catch (e) { log(id + "/" + name + ": " + (e && e.stack || e)); return { ok: false, error: String(e && e.message || e) }; }
-    if (!(result && result.save === false)) { try { env.saveState(); } catch (e) { log("save: " + e.message); } }
+    // read-only actions ({ save: false }) skip the save and the (big) snapshot
+    if (result && result.save === false) return { ok: true, result, snapshot: null };
+    try { env.saveState(); } catch (e) { log("save: " + e.message); }
     return { ok: true, result, snapshot: env.snapshot ? env.snapshot() : null };
   }
 

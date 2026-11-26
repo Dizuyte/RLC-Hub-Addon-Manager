@@ -176,7 +176,7 @@ game's code belongs to its authors.
 ```js
 hub.action("reset", (payload, state) => {
   hub.data(state).days = 0;
-  return { done: true };          // return { save: false, ... } if nothing changed
+  return { done: true };          // return { save: false, ... } if you only read
 });
 ```
 
@@ -188,8 +188,9 @@ if (res.ok) { if (res.snapshot) S = res.snapshot; render(); }
 else showToast(res.error, "error");
 ```
 
-`res` is `{ ok, result, snapshot, error }`. The career is saved after the action. Actions are refused for saves
-without your addon.
+`res` is `{ ok, result, snapshot, error }`. The career is saved after the action and `snapshot` is the fresh one.
+If your action only reads (returns `{ save: false, ... }`), nothing is saved and `snapshot` is `null`: faster.
+Actions are refused for saves without your addon.
 
 ---
 

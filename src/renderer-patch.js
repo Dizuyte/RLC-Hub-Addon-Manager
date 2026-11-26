@@ -92,9 +92,18 @@
   function dependents(id, picked) { return picked.filter(function (o) { return o !== id && needs(o, id, {}); }); }
   function names(ids) { return ids.map(function (r) { var b = byId(r); return b ? T(b.name) : r; }).join(", "); }
 
+  // on the new-career screen: its picker is in the page, or preStartHtml ran a moment ago (render in progress)
+  function creating() {
+    if (!window.__hubPlusCreating) return false;
+    if (Date.now() - R.preAt < 300) return true;
+    if (document.querySelector(".pre-go")) return true;
+    window.__hubPlusCreating = false;
+    return false;
+  }
+  R.preAt = 0;
   window.__hubPlusActiveList = function () {
     var m = meta();
-    if (window.__hubPlusCreating && Array.isArray(window.__hubPlusPending)) return window.__hubPlusPending;
+    if (creating() && Array.isArray(window.__hubPlusPending)) return window.__hubPlusPending;
     var c = typeof S !== "undefined" && S ? S.career : null;
     if (c && c.hubPlus && Array.isArray(c.hubPlus.on)) return c.hubPlus.on;
     if (c && m && Array.isArray(m.on)) return m.on;
@@ -166,14 +175,13 @@
     var origPre = preStartHtml;
     preStartHtml = function () {
       window.__hubPlusCreating = true;
+      R.preAt = Date.now();
       var html = origPre.apply(this, arguments);
       var anchor = '<button class="btn primary pre-go"';
       var box = "";
       try { box = pickerHtml(); } catch (e) { console.error("[hub+] picker", e); }
       return box && html.indexOf(anchor) >= 0 ? html.replace(anchor, box + anchor) : html;
     };
-    var origRender = render;
-    render = function () { window.__hubPlusCreating = false; return origRender.apply(this, arguments); };
   } catch (e) { console.error("[hub+] picker hook", e); }
 
   document.addEventListener("click", function (ev) {
