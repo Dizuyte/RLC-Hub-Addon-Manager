@@ -50,6 +50,9 @@ function createHub(env) {
       a.legacyKeys = Array.isArray(a.legacyKeys) ? a.legacyKeys.map(String) : [];
       a.wrongGame = !!(a.game && gameVersion && String(a.game) !== gameVersion);
       a.hidden = !!a.hidden; // library addon: not shown in the picker, turned on by the addons that require it
+      // career types the addon works in: "manager" and/or "player" (both when not said)
+      const cs = (Array.isArray(a.careers) ? a.careers : a.careers ? [a.careers] : []).map((x) => String(x).toLowerCase()).filter((x) => x === "manager" || x === "player");
+      a.careers = cs.length ? Array.from(new Set(cs)) : ["manager", "player"];
       byId.set(a.id, a);
       addons.push(a);
     }
@@ -62,11 +65,14 @@ function createHub(env) {
 
   /* ---------- which addons a save has ---------- */
   // Adds what is required, drops what clashes with an addon picked before it (same group, conflicts), drops what can not load.
-  function normalize(list) {
+  // A career type ("manager"/"player") also drops the addons that do not work in it.
+  const careerOf = (st) => (st && st.mode === "player" ? "player" : "manager");
+  const fits = (a, career) => !career || !a || a.careers.includes(career);
+  function normalize(list, career) {
     const want = [];
     const add = (id, depth) => {
       const a = byId.get(id);
-      if (!a || a.missing || want.includes(id) || depth > 20) return;
+      if (!a || a.missing || !fits(a, career) || want.includes(id) || depth > 20) return;
       for (const r of a.requires) add(r, depth + 1);
       const clash = want.some((o) => {
         const b = byId.get(o);
@@ -88,8 +94,13 @@ function createHub(env) {
       rec = st.hubPlus = { v: VERSION, on: infer(st), imported: true, locked: true };
       log("save from before RLC Hub Addon Manager: addons " + (rec.on.join(", ") || "none"));
     }
+    // an addon made for the other career type stays in the list (its data too) but does not run in this save
+    const career = careerOf(st);
     let c = cache.get(rec);
-    if (!c || c.src !== rec.on || c.len !== rec.on.length) { c = { src: rec.on, len: rec.on.length, set: new Set(rec.on) }; cache.set(rec, c); }
+    if (!c || c.src !== rec.on || c.len !== rec.on.length || c.career !== career) {
+      c = { src: rec.on, len: rec.on.length, career, set: new Set(rec.on.filter((id) => fits(byId.get(id), career))) };
+      cache.set(rec, c);
+    }
     return c.set;
   }
   const isState = (a) => !!a && typeof a === "object" && Array.isArray(a.teams) && Array.isArray(a.players);
@@ -101,7 +112,7 @@ function createHub(env) {
     const before = st.hubPlus.on.slice();
     // addons not installed any more stay in the list (their data is still in the save, they come back when reinstalled)
     const missing = before.filter((id) => !byId.has(id));
-    const on = normalize(ids).concat(missing);
+    const on = normalize(ids, careerOf(st)).concat(missing);
     st.hubPlus.on = on;
     st.hubPlus.edits = (Array.isArray(st.hubPlus.edits) ? st.hubPlus.edits : []).concat([{ date: st.currentDate || null, before, after: on.slice() }]).slice(-20);
     log("addons of the save changed by the player: " + (before.join(", ") || "none") + " -> " + (on.join(", ") || "none"));
@@ -164,8 +175,10 @@ function createHub(env) {
   function wrapGenerate(engine) {
     const gen = engine.generateLeague;
     if (typeof gen !== "function" || gen.__hubPlusRoot) return;
-    engine.generateLeague = function () {
-      const set = pending || new Set(defaults());
+    engine.generateLeague = function (cfg) {
+      // a player career keeps only the addons made for it (and the other way round)
+      const career = cfg && typeof cfg === "object" && cfg.mode === "player" ? "player" : "manager";
+      const set = new Set(normalize(Array.from(pending || defaults()), career));
       const prev = creating;
       creating = set;
       try {
@@ -197,7 +210,7 @@ function createHub(env) {
     return {
       addons: addons.map((a) => ({
         id: a.id, name: a.name, author: a.author, version: a.version, description: a.description,
-        requires: a.requires, conflicts: a.conflicts, group: a.group, default: !!a.default, menu: !!a.menu, hidden: a.hidden,
+        requires: a.requires, conflicts: a.conflicts, group: a.group, default: !!a.default, menu: !!a.menu, hidden: a.hidden, careers: a.careers,
         missing: a.missing || null, wrongGame: a.wrongGame, game: a.game || null, url: a.url || null, license: a.license || null,
         failed: a.failed || null, lang: a.lang || null,
       })),

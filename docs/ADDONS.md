@@ -68,6 +68,7 @@ RLC Hub Addon Manager makes sure your code only runs in saves that picked your a
 | `order` | no | Load order, small first (default 100). An addon loaded later wraps the ones before it. |
 | `menu` | no | `true`: your UI also runs when no career is loaded (main menu, World editor). |
 | `hidden` | no | `true`: a library addon, not shown in the picker. It is turned on by the addons that list it in `requires` (code shared by several addons). |
+| `careers` | no | `["manager"]`, `["player"]` or both (the default). In a career of the other type the addon is greyed out in the picker and does not run, even if a save lists it. |
 | `legacyKeys` | no | Keys in a save that mean "this save already used my addon" (only for saves made before RLC Hub Addon Manager). |
 | `lang` | no | Your translations (see 6). |
 

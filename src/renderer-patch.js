@@ -38,6 +38,9 @@
       "Can not be used: needs {list}, which is not installed.": "Inutilisable : il faut {list}, qui n'est pas installé.",
       "Could not load: {error}": "Chargement impossible : {error}",
       "Made for RL Career Hub {v}.": "Fait pour RL Career Hub {v}.",
+      "Manager career only.": "Carrière manager uniquement.",
+      "Player career only.": "Carrière joueur uniquement.",
+      "Off in this save.": "Désactivé dans cette save.",
       "Addons with a problem": "Addons avec un problème",
       "Addons of this save": "Addons de cette save",
       "No addons.": "Aucun addon.",
@@ -60,7 +63,14 @@
   function view() { var m = meta(); return (m && m.list) || R.list || null; }
   function all() { var v = view(); return (v && v.addons) || []; }
   function byId(id) { return all().find(function (a) { return a.id === id; }) || null; }
-  function usable(a) { return a && !a.missing && !a.failed; }
+  function usable(a) { return a && !a.missing && !a.failed && fitsCareer(a); }
+  // the career being made (new-career screen) or the loaded one: "manager" or "player"
+  function careerType() {
+    if (creating()) { try { return typeof preMode !== "undefined" && preMode === "player" ? "player" : "manager"; } catch (e) { return "manager"; } }
+    var c = typeof S !== "undefined" && S ? S.career : null;
+    return c && c.mode === "player" ? "player" : "manager";
+  }
+  function fitsCareer(a) { return !a || !Array.isArray(a.careers) || a.careers.indexOf(careerType()) >= 0; }
 
   // RLC Hub Addon Manager texts and each addon's own "lang" (addon.json) in the game's language system (English = key)
   function installLang() {
@@ -125,8 +135,8 @@
     var m = meta();
     if (creating() && Array.isArray(window.__hubPlusPending)) return window.__hubPlusPending;
     var c = typeof S !== "undefined" && S ? S.career : null;
+    if (c && m && Array.isArray(m.on)) return m.on; // what really runs in this save (addons for the other career type are left out)
     if (c && c.hubPlus && Array.isArray(c.hubPlus.on)) return c.hubPlus.on;
-    if (c && m && Array.isArray(m.on)) return m.on;
     if (c) return [];
     if (m && Array.isArray(m.pending)) return m.pending;
     return all().filter(function (a) { return a.menu; }).map(function (a) { return a.id; });
@@ -153,6 +163,7 @@
     if (a.missing) why.push(T("Can not be used: needs {list}, which is not installed.", { list: a.missing.join(", ") }));
     if (a.failed) why.push(T("Could not load: {error}", { error: a.failed }));
     if (a.wrongGame) why.push(T("Made for RL Career Hub {v}.", { v: a.game }));
+    if (!fitsCareer(a)) why.push(careerType() === "player" ? T("Manager career only.") : T("Player career only."));
     if (usable(a) && !onNow) {
       var g = a.group && picked.find(function (o) { var b = byId(o); return b && b.group === a.group; });
       if (g) why.push(T("Replaces {addon} (only one per save).", { addon: T(byId(g).name) }));
@@ -165,7 +176,7 @@
     var tip = [T(a.description || ""), T("by {author}", { author: a.author }) + (a.version ? " · v" + a.version : "")].concat(why).filter(Boolean).join("\n");
     return '<button class="pre-diff hubplus-addon' + (onNow ? " on" : "") + '" data-action="' + (action || "hubplus-addon") + '" data-id="' + e2(a.id) + '" aria-pressed="' + onNow + '"' +
       (usable(a) ? "" : ' disabled style="opacity:.45;cursor:not-allowed"') + ' title="' + e2(tip) + '"><span class="pre-diff-k">' + e2(T(a.name)) +
-      '</span><span class="pre-diff-v">' + e2(onNow ? T("On") : T("Off")) + (a.author ? " · " + e2(a.author) : "") + "</span></button>";
+      '</span><span class="pre-diff-v">' + e2(!fitsCareer(a) ? (careerType() === "player" ? T("Manager career only.") : T("Player career only.")).replace(/\.$/, "") : onNow ? T("On") : T("Off")) + (a.author ? " · " + e2(a.author) : "") + "</span></button>";
   }
   // turning one addon on or off in a list: what needs it goes with it; the new one wins its group and conflicts
   function toggle(picked, id) {
@@ -200,12 +211,15 @@
     if (!v) { ensureList(); return ""; }
     installLang();
     var list = all().filter(function (a) { return !a.hidden; });
+    list = list.filter(fitsCareer).concat(list.filter(function (a) { return !fitsCareer(a); }));
     var head = '<div class="pre-field hubplus-pick"><span>' + e2(T("Addons for this save")) + "</span>";
     if (!list.length) {
       return head + '<div class="pre-note">' + e2(T("No addon installed. Put addon folders in {dir}, then restart RLC Hub Addon Manager.", { dir: v.dir || "addons" })) + "</div>" +
-        '<div style="margin-top:6px"><button class="ptab" data-action="hubplus-folder" style="cursor:pointer">' + e2(T("Open the addons folder")) + "</button></div></div>";
+        '<div style="margin-top:6px"><button class="pre-diff" data-action="hubplus-folder" style="cursor:pointer"><span class="pre-diff-k">' + e2(T("Open the addons folder")) + "</span></button></div></div>";
     }
-    if (!R.pick) R.pick = defaults();
+    var ct = careerType();
+    if (!R.pick || R.career !== ct) { R.pick = prune(defaults()); R.career = ct; }
+    R.pick = prune(normalize(R.pick));
     send(false);
     var picked = R.pick;
     var bad = (v.problems || []).map(function (p) { return e2(p.folder) + ": " + e2(p.error); });
@@ -213,9 +227,9 @@
       '<div class="pre-series" role="group" style="flex-wrap:wrap;margin-top:6px">' + list.map(function (a) { return addonButton(a, picked); }).join("") + "</div>" +
       mixWarning(picked) +
       '<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">' +
-      '<button class="ptab" data-action="hubplus-defaults" style="cursor:pointer">' + e2(T("Default addons")) + "</button>" +
-      '<button class="ptab" data-action="hubplus-none" style="cursor:pointer">' + e2(T("No addons")) + "</button>" +
-      '<button class="ptab" data-action="hubplus-folder" style="cursor:pointer">' + e2(T("Open the addons folder")) + "</button></div>" +
+      '<button class="pre-diff" data-action="hubplus-defaults" style="cursor:pointer"><span class="pre-diff-k">' + e2(T("Default addons")) + "</span></button>" +
+      '<button class="pre-diff" data-action="hubplus-none" style="cursor:pointer"><span class="pre-diff-k">' + e2(T("No addons")) + "</span></button>" +
+      '<button class="pre-diff" data-action="hubplus-folder" style="cursor:pointer"><span class="pre-diff-k">' + e2(T("Open the addons folder")) + "</span></button></div>" +
       (bad.length ? '<div class="pre-note" style="margin-top:6px">' + e2(T("Addons with a problem")) + ": " + bad.join(" · ") + "</div>" : "") +
       "</div>";
   }
@@ -242,6 +256,7 @@
     var cur = saveList() || [];
     var changed = E.pick.slice().sort().join(",") !== cur.slice().sort().join(",");
     var list = all().filter(function (a) { return !a.hidden; });
+    list = list.filter(fitsCareer).concat(list.filter(function (a) { return !fitsCareer(a); }));
     var h = '<div class="hubplus-edit" style="margin-top:8px;padding:10px;border-radius:10px;border:1px solid rgba(127,127,127,.35)">' +
       '<div class="pre-series" role="group" style="flex-wrap:wrap">' + list.map(function (a) { return addonButton(a, E.pick, "hubplus-eaddon"); }).join("") + "</div>" + mixWarning(E.pick);
     if (E.step === 0) {
@@ -318,7 +333,8 @@
             var rows = onList.filter(function (id) { var a = byId(id); return !(a && a.hidden); }).map(function (id) {
               var a = byId(id);
               if (!a) return '<div style="opacity:.7">' + e2(id) + " (" + e2(T("not installed")) + ")</div>";
-              return '<div style="margin-top:4px"><b>' + e2(T(a.name)) + "</b>" + (a.version ? " v" + e2(a.version) : "") + " · " + e2(T("by {author}", { author: a.author })) +
+              var off = !fitsCareer(a) ? ' <span style="opacity:.7">(' + e2(careerType() === "player" ? T("Manager career only.") : T("Player career only.")) + " " + e2(T("Off in this save.")) + ")</span>" : "";
+              return '<div style="margin-top:4px' + (off ? ";opacity:.55" : "") + '"><b>' + e2(T(a.name)) + "</b>" + (a.version ? " v" + e2(a.version) : "") + " · " + e2(T("by {author}", { author: a.author })) + off +
                 (a.license ? ' <span style="opacity:.6">(' + e2(a.license) + ")</span>" : "") + "</div>";
             }).join("");
             box = '<div style="letter-spacing:.06em;text-transform:uppercase;opacity:.7">' + e2(T("Addons of this save")) + "</div>" +
