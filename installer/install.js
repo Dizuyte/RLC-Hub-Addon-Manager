@@ -89,6 +89,12 @@ function planChanges(asar, payload) {
       if (n !== 1) throw new Error("anchor not found in " + op.file);
       s = s.replace(op.replace.from, () => op.replace.to);
     }
+    if (op.replaceRe) {
+      const re = new RegExp(op.replaceRe.re, "g");
+      const n = (s.match(re) || []).length;
+      if (n !== 1) throw new Error("anchor not found in " + op.file);
+      s = s.replace(re, op.replaceRe.to);
+    }
     if (op.insertAfter) {
       const i = s.indexOf(op.insertAfter.anchor);
       if (i < 0) throw new Error("anchor not found in " + op.file);

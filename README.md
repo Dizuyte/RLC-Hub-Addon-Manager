@@ -1,7 +1,7 @@
 # RLC Hub Addon Manager
 
 An addon manager for **RL Career Hub** (Rocket League career game), by Milan. Current version: **v1.1**, for
-RL Career Hub **0.2.0-beta.34**.
+RL Career Hub **0.2.0-beta.35**.
 
 - Runs in its own copy of the game (`Documents\RLC Hub Addon Manager`), with its own saves: the normal game is never touched.
 - Addons are folders in `Documents\RLC Hub Addon Manager\addons`.

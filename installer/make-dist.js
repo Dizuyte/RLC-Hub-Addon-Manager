@@ -11,7 +11,7 @@ const ROOT = path.join(__dirname, "..");
 const SRC = path.join(ROOT, "src");
 const OUT = path.resolve(process.argv[2] || path.join(ROOT, "dist", "RLC Hub Addon Manager"));
 const VERSION = "1.1";
-const GAME = "0.2.0-beta.34";
+const GAME = "0.2.0-beta.35";
 const KEY = Buffer.from("rlc-hubplus/milan/2026/all-rights-reserved");
 const BANNER =
   "/* RLC Hub Addon Manager v" + VERSION + " (c) 2026 Milan. All rights reserved.\n" +
@@ -19,9 +19,9 @@ const BANNER =
   "   itself or any other project, is prohibited without the author's written permission.\n" +
   "   Writing addons that run inside RLC Hub Addon Manager is allowed: see LICENSE.txt. */\n";
 
-// the game's check of a watched match (beta.34): 6 bots, 6 cars, 3 blue, 3 orange
-const WATCH_OBJ = "_0x3e6557";
-const WATCH = "_0x3e6557[_0x17e50e(0x2bc)]===0x6&&_0x3e6557[_0x17e50e(0x3ef)]===0x6&&_0x3e6557[_0x17e50e(0x25b)]===0x3&&_0x3e6557[_0x17e50e(0x152)]===0x3";
+// the game's check of a watched match: 6 bots, 6 cars, 3 blue, 3 orange. Its names change with every game build,
+// so the installer finds it with a pattern (works on 0.2.0-beta.33, .34 and .35).
+const WATCH_RE = "(_0x[0-9a-f]+)\\[[^\\]]+\\]===0x6&&\\1\\[[^\\]]+\\]===0x6&&\\1\\[[^\\]]+\\]===0x3&&\\1\\[[^\\]]+\\]===0x3";
 const min = (file) =>
   esbuild.transformSync(fs.readFileSync(path.join(SRC, file), "utf8"), { minify: true, legalComments: "none", charset: "utf8" }).code;
 const chunk = (...files) => "\n;" + BANNER + files.map(min).join("\n;");
@@ -34,7 +34,7 @@ const payload = {
     // the sandbox is injected into the game window as text: kept readable for addon makers who debug in DevTools
     { file: "rlc-hubplus/sandbox.js", create: BANNER + fs.readFileSync(path.join(SRC, "core", "sandbox.js"), "utf8") },
     // hook "watch-check": the game's rule for a watched match (6 bots, 3 per side) can be changed by addons
-    { file: "main.js", replace: { from: WATCH, to: "(typeof __hubWatchOk==='function'&&__hubWatchOk(" + WATCH_OBJ + ")!==null?__hubWatchOk(" + WATCH_OBJ + "):(" + WATCH + "))" } },
+    { file: "main.js", replaceRe: { re: WATCH_RE, to: "(typeof __hubWatchOk==='function'&&__hubWatchOk($1)!==null?__hubWatchOk($1):($&))" } },
     { file: "engine/league.js", append: chunk("bridge-patch.js") },
     { file: "engine/titles.js", append: chunk("bridge-patch.js") },
     { file: "main.js", append: chunk("main-patch.js") },

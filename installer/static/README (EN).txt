@@ -1,7 +1,7 @@
 RLC Hub Addon Manager v1.1 for RL Career Hub - by Milan
 ==========================================
 
-An addon manager for RL Career Hub 0.2.0-beta.34 (Windows).
+An addon manager for RL Career Hub 0.2.0-beta.35 (Windows).
 Your normal RL Career Hub is NOT modified: RLC Hub Addon Manager runs in its own copy of the game
 (Documents\RLC Hub Addon Manager), with its own saves.
 

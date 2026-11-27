@@ -1,6 +1,6 @@
 # Making an addon for RLC Hub Addon Manager
 
-RLC Hub Addon Manager is an addon manager for **RL Career Hub** (0.2.0-beta.34). It runs in its own copy of the game
+RLC Hub Addon Manager is an addon manager for **RL Career Hub** (0.2.0-beta.35). It runs in its own copy of the game
 (`Documents\RLC Hub Addon Manager`). An addon is **one folder** in `Documents\RLC Hub Addon Manager\addons`. Players pick the
 addons of a career when they create it. They can change them later from the Setup tab, after two warnings (it can
 break the save), so your addon may be turned on in the middle of a career: handle saves that have no data of yours yet.
@@ -38,7 +38,7 @@ RLC Hub Addon Manager makes sure your code only runs in saves that picked your a
   "author": "YourName",
   "version": "1.0.0",
   "description": "One sentence shown in the picker.",
-  "game": "0.2.0-beta.34",
+  "game": "0.2.0-beta.35",
   "main": "main.js",
   "ui": ["ui.js"],
   "default": false,
@@ -159,7 +159,7 @@ What it can't catch: changes to elements that already exist in the page (`el.sty
 element outside a render function), and game globals declared with `let`/`const`. Prefer replacing the game's
 `...Html()` functions: the game calls them on every render, so your changes come and go with the save.
 
-### Useful game globals (seen in 0.2.0-beta.34, may change with the game)
+### Useful game globals (seen in 0.2.0-beta.35, may change with the game)
 
 - `S`: the last snapshot from the main process. `S.career` is the loaded career (or `null`), plus what your
   `hub.onSnapshot` added. `S.hubPlus.on` = addons of the loaded save.
@@ -249,7 +249,7 @@ Porting someone else's mod into an addon: get their permission and credit them.
 
 Copy this, then describe your addon:
 
-> I'm making an addon for RLC Hub Addon Manager, an addon manager for the game RL Career Hub (Electron, version 0.2.0-beta.34).
+> I'm making an addon for RLC Hub Addon Manager, an addon manager for the game RL Career Hub (Electron, version 0.2.0-beta.35).
 > Follow the attached guide ADDONS.md exactly: one folder with addon.json, main.js (module.exports = function (hub)
 > {...}, wrap hub.engine functions, keep the original and call it, store data only in hub.data(state)) and ui.js
 > (runs in the game page, replace game global functions like doctorHtml and call the original, texts in English
