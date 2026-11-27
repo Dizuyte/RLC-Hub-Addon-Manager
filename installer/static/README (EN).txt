@@ -1,7 +1,7 @@
-RLC Hub Addon Manager v1.0 for RL Career Hub - by Milan
+RLC Hub Addon Manager v1.1 for RL Career Hub - by Milan
 ==========================================
 
-An addon manager for RL Career Hub 0.2.0-beta.33 (Windows).
+An addon manager for RL Career Hub 0.2.0-beta.34 (Windows).
 Your normal RL Career Hub is NOT modified: RLC Hub Addon Manager runs in its own copy of the game
 (Documents\RLC Hub Addon Manager), with its own saves.
 
@@ -26,7 +26,7 @@ INSTALL
    fresh. Your normal saves are copied, never changed.
 6. Wait while the game is copied (you need a few GB free), until it says "Done!".
 7. Start it with the "RLC Hub Addon Manager" shortcut on your desktop. At the bottom of the
-   Setup tab you should see "RLC Hub Addon Manager v1.0 by Milan".
+   Setup tab you should see "RLC Hub Addon Manager v1.1 by Milan".
 
 UPDATE: run the new installer. Your RLC Hub Addon Manager saves and your addons folder are kept.
 

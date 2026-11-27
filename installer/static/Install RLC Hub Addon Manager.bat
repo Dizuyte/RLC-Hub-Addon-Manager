@@ -4,7 +4,7 @@ title RLC Hub Addon Manager installer - by Milan
 cd /d "%~dp0"
 echo.
 echo  ===============================================================
-echo      RLC Hub Addon Manager v1.0 for RL Career Hub - by Milan
+echo      RLC Hub Addon Manager v1.1 for RL Career Hub - by Milan
 echo  ===============================================================
 echo.
 if exist "%~dp0files\install.js" goto unzipped

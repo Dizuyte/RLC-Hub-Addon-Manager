@@ -1,7 +1,7 @@
 # RLC Hub Addon Manager
 
-An addon manager for **RL Career Hub** (Rocket League career game), by Milan. Current version: **v1.0**, for
-RL Career Hub **0.2.0-beta.33**.
+An addon manager for **RL Career Hub** (Rocket League career game), by Milan. Current version: **v1.1**, for
+RL Career Hub **0.2.0-beta.34**.
 
 - Runs in its own copy of the game (`Documents\RLC Hub Addon Manager`), with its own saves: the normal game is never touched.
 - Addons are folders in `Documents\RLC Hub Addon Manager\addons`.
@@ -13,7 +13,7 @@ RL Career Hub **0.2.0-beta.33**.
 
 ## Install (players)
 
-Download `RLC-Hub-Addon-Manager-v1.0.zip` from the [releases](https://github.com/Dizuyte/RLC-Hub-Addon-Manager/releases), extract it, close RL Career Hub, double-click `Install RLC Hub Addon Manager.bat`, then start the game
+Download `RLC-Hub-Addon-Manager-v1.1.zip` from the [releases](https://github.com/Dizuyte/RLC-Hub-Addon-Manager/releases), extract it, close RL Career Hub, double-click `Install RLC Hub Addon Manager.bat`, then start the game
 with the **RLC Hub Addon Manager** shortcut. Full guide in the zip (`README (EN).txt`, `LISEZMOI (FR).txt`).
 
 ## How it works
@@ -33,7 +33,7 @@ addon's version only for saves that picked the addon. The original `app.asar` is
 
 ```
 npm install esbuild
-node installer/make-dist.js "out/RLC Hub Addon Manager v1.0"
+node installer/make-dist.js "out/RLC Hub Addon Manager v1.1"
 ```
 
 ## License

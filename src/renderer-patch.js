@@ -6,7 +6,7 @@
    - window.__hubPlusActiveList(): addons on right now (also used by the sandbox that runs the addons' UIs) */
 (function () {
   "use strict";
-  var HUBPLUS_VERSION = "1.0";
+  var HUBPLUS_VERSION = "1.1";
   var TEXTS = {
     fr: {
       "Addons for this save": "Addons de cette save",
